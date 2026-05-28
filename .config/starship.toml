@@ -57,7 +57,7 @@ format = '[$branch]($style) '
 style = 'italic purple'
 
 [git_status]
-format = '[\[$all_status\]]($style)'
+format = '([\[$all_status\]]($style))'
 style = 'cyan'
 ahead = '⇡${count}'
 diverged = '⇕⇡${ahead_count}⇣${behind_count}'
