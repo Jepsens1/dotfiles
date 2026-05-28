@@ -1,0 +1,68 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+command_timeout = 800
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$git_commit\
+$hostname\
+$fill\
+$python\
+$nodejs\
+$golang\
+$dotnet\
+$docker_context\
+$cmd_duration\
+$line_break\
+$character"""
+
+[directory]
+truncation_length = 2
+truncation_symbol = "…/"
+
+[fill]
+symbol = " "
+
+[cmd_duration]
+min_time = 500
+format = '[$duration](bold cyan) '
+
+[docker_context]
+style = "bold cyan"
+format = '[$symbol$context]($style)'
+
+[dotnet]
+style = "bold cyan"
+format = '[$symbol($version )(🎯 $tfm )]($style)'
+
+[golang]
+style = "bold cyan"
+symbol = 'golang '
+format = '[$symbol($version )]($style)'
+
+[nodejs]
+format = '[$symbol($version )]($style)'
+
+[python]
+style = "bold cyan"
+pyenv_version_name = true
+pyenv_prefix = ''
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
+[git_branch]
+format = '[$branch]($style) '
+style = 'italic purple'
+
+[git_status]
+format = '[\[$all_status\]]($style)'
+style = 'cyan'
+ahead = '⇡${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+behind = '⇣${count}'
+
+[hostname]
+detect_env_vars = ['!TMUX', 'SSH_CONNECTION']
+format = '[$ssh_symbol](bold cyan) on [$hostname](bold red) '
