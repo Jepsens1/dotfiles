@@ -16,3 +16,10 @@ hl.monitor({
   position = "auto-left",
   scale    = "1",
 })
+
+hl.monitor({
+  output   = "DP-4",
+  mode     = "2560x1600@60",
+  position = "0x0",
+  scale    = "1",
+})

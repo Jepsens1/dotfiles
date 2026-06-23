@@ -5,7 +5,7 @@
     background-color: @background;
     color: @foreground;
     font-family: JetBrainsMono Nerd Font;
-    font-size: 13px;
+    font-size: 14px;
     border: none;
     border-radius: 0;
     min-height: 0;
@@ -38,7 +38,8 @@
 #network,
 #cpu,
 #memory,
-#wireplumber {
+#wireplumber
+#tray {
   padding: 6px;
   min-width: 12px;
   margin: 0px 7.5px;
