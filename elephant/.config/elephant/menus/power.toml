@@ -1,0 +1,27 @@
+name = "power"
+name_pretty = "Power"
+icon = "system-shutdown"
+
+[[entries]]
+text = "Lock"
+icon = "system-lock-screen"
+keywords = ["lock", "hyprlock"]
+actions = { default = "hyprlock" }
+
+[[entries]]
+text = "Logout"
+icon = "system-log-out"
+keywords = ["logout", "exit"]
+actions = { default = "hyprctl dispatch 'hl.dsp.exit()'" }
+
+[[entries]]
+text = "Reboot"
+icon = "system-reboot"
+keywords = ["reboot", "restart"]
+actions = { default = "systemctl reboot" }
+
+[[entries]]
+text = "Shutdown"
+icon = "system-shutdown"
+keywords = ["off", "shutdown", "poweroff"]
+actions = { default = "systemctl poweroff" }

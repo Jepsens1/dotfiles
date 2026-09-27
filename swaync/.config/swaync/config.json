@@ -1,0 +1,28 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "right",
+  "positionY": "top",
+  "fit-to-screen": false,
+  "control-center-positionX": "center",
+  "control-center-margin-top": 24,
+  "control-center-margin-bottom": 24,
+  "control-center-height": 800,
+  "control-center-width": 600,
+  "layer": "overlay",
+  "cssPriority": "user",
+  "notification-2fa-action": true,
+  "relative-timestamps": true,
+  "keyboard-shortcuts": true,
+  "notification-grouping": true,
+  "hide-on-clear": true,
+  "hide-on-action": true,
+  "script-fail-notify": true,
+  "widgets": [
+    "title",
+    "dnd",
+    "volume",
+    "mpris",
+    "notifications",
+    "inhibitors"
+  ]
+}

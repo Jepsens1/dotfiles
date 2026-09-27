@@ -1,0 +1,10 @@
+[tools]
+dotnet = "latest"
+"gem:rails" = "latest"
+go = "latest"
+node = "latest"
+python = "latest"
+ruby = "latest"
+rust = "latest"
+uv = "latest"
+"pypi:pywalfox" = "2.9.0"

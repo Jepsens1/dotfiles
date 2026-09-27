@@ -1,0 +1,79 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+command_timeout = 800
+palette = "colors"
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$git_commit\
+$hostname\
+$fill\
+$python\
+$nodejs\
+$golang\
+$dotnet\
+$docker_context\
+$cmd_duration\
+$line_break\
+$character"""
+
+[directory]
+truncation_length = 2
+truncation_symbol = "…/"
+style = "bold color1"
+
+[fill]
+symbol = " "
+
+[cmd_duration]
+min_time = 500
+format = '[$duration](bold color3) '
+
+[docker_context]
+symbol = " "
+style = "bold color8"
+format = '[$symbol$context]($style)'
+
+[dotnet]
+symbol = " "
+style = "bold color8"
+format = '[$symbol($version )(🎯 $tfm )]($style)'
+
+[golang]
+symbol = " "
+style = "bold color8"
+format = '[$symbol($version )]($style)'
+
+[nodejs]
+symbol = " "
+style = "bold color8"
+format = '[$symbol($version )]($style)'
+
+[python]
+symbol = " "
+style = "bold color8"
+pyenv_version_name = true
+pyenv_prefix = ''
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
+[git_branch]
+format = '[$branch]($style) '
+style = 'italic color9'
+
+[git_status]
+format = '([\[$all_status\]]($style))'
+style = 'color3'
+ahead = '⇡${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+behind = '⇣${count}'
+
+[hostname]
+detect_env_vars = ['!TMUX', 'SSH_CONNECTION']
+format = '[$ssh_symbol](bold color8) on [$hostname](bold error) '
+
+[character]
+success_symbol = "[❯](bold color9)"
+error_symbol = "[❯](bold error)"

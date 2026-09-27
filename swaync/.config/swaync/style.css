@@ -1,0 +1,225 @@
+/*
+ * swaync overlay theme (quiet / minimal)
+ *
+ * How this file works:
+ *   The built-in factory theme still loads underneath. This file only
+ *   overrides what we care about. config.json "cssPriority": "user"
+ *   makes these rules win over GTK + factory CSS.
+ *
+ * Colors:
+ *   @import below pulls matugen @define-color names
+ *   (@surface, @primary, @error, …) from colors/colors.css
+ *
+ * config.json cannot contain comments (strict JSON). Notes:
+ *   positionX/Y                 popup toasts: top-right
+ *   control-center-positionX    panel: horizontal center
+ *   fit-to-screen false         panel is a box, not full-height
+ *   control-center-width/height size of that box
+ *   cssPriority user            this stylesheet wins
+ *   hide-on-clear true          Close All also closes the panel
+ *   widgets                     top-to-bottom order in the panel
+ */
+
+@import "colors/colors.css";
+
+* {
+  font-family: Inter, "JetBrainsMono Nerd Font Propo", sans-serif;
+}
+
+:root {
+  /* Mapped to matugen. Factory CSS still reads these var() names. */
+  --cc-bg: @surface;
+  --noti-border-color: @outline_variant;
+  --noti-bg-darker: @surface_container_low;
+  --noti-bg-hover: @surface_container_high;
+  --noti-bg-focus: @surface_container_high;
+  --noti-close-bg: @surface_container_highest;
+  --noti-close-bg-hover: @primary;
+  --text-color: @on_surface;
+  --text-color-disabled: @on_surface_variant;
+  --bg-selected: @primary;
+
+  --notification-icon-size: 48px;
+  --notification-app-icon-size: calc(var(--notification-icon-size) / 3);
+  --notification-group-icon-size: 32px;
+  --border: 1px solid var(--noti-border-color);
+  --border-radius: 12px;
+  --font-size-body: 15px;
+  --font-size-summary: 16px;
+
+  /* Factory CSS misspelled these; both spellings kept so its transitions still work. */
+  --hover-tranistion: background 0.15s ease-in-out;
+  --group-collapse-tranistion: opacity 400ms ease-in-out;
+  --hover-transition: var(--hover-tranistion);
+  --group-collapse-transition: var(--group-collapse-tranistion);
+
+  --mpris-album-art-overlay: alpha(@surface, 0.55);
+  --mpris-button-hover: alpha(@on_surface, 0.12);
+  --mpris-album-art-icon-size: 72px;
+}
+
+/* Layer-shell windows must stay transparent or you get a black rectangle. */
+notificationwindow,
+blankwindow,
+.blank-window,
+.floating-notifications {
+  background: transparent;
+}
+
+/* --- popup toasts --- */
+
+/* Gap between stacked cards (and from the screen edge). */
+.notification-row .notification-background {
+  padding: 8px 12px;
+}
+
+/* Kill the factory gray flash when hovering the toast body. */
+.notification-default-action:hover {
+  background: transparent;
+}
+
+.notification {
+  background: alpha(@surface_container, 0.8);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  padding: 12px;
+}
+
+/* Quiet critical: border only, no fill. */
+.notification.critical {
+  border-color: @error;
+}
+
+.close-button {
+  background: var(--noti-close-bg);
+  color: var(--text-color);
+  border: none;
+  box-shadow: none;
+  border-radius: 100%;
+  min-width: 24px;
+  min-height: 24px;
+  margin: 8px 8px 0 0;
+}
+
+.close-button:hover {
+  background: var(--noti-close-bg-hover);
+  color: @on_primary;
+}
+
+/* --- control center (Mod+N) --- */
+
+.control-center {
+  background: var(--cc-bg);
+  color: var(--text-color);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  padding: 12px;
+}
+
+.control-center .control-center-list-placeholder {
+  opacity: 0.5;
+}
+
+/* Shared card chrome for title / dnd / volume / mpris / inhibitors. */
+.widget {
+  margin: 6px 4px;
+  padding: 12px;
+  border-radius: var(--border-radius);
+}
+
+/* --- title --- */
+
+.widget-title > label {
+  font-size: 1.25rem;
+}
+
+.widget-title > button {
+  background: transparent;
+  color: var(--text-color);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 4px 10px;
+}
+
+.widget-title > button:hover {
+  background: var(--noti-bg-hover);
+}
+
+/* --- do not disturb --- */
+
+.widget-dnd switch {
+  background: @surface_container_highest;
+  border-radius: 999px;
+}
+
+/* Only accent: switch turns primary when DND is on. */
+.widget-dnd switch:checked {
+  background: @primary;
+}
+
+.widget-dnd switch slider {
+  background: @on_surface;
+  border-radius: 999px;
+  min-width: 18px;
+  min-height: 18px;
+}
+
+.widget-dnd switch:checked slider {
+  background: @on_primary;
+}
+
+/* --- volume --- */
+
+.widget-volume scale trough {
+  background: @surface_container_highest;
+  border: none;
+  min-height: 8px;
+  border-radius: 999px;
+}
+
+/* Only accent: filled portion of the slider. */
+.widget-volume scale trough highlight {
+  background: @primary;
+  border-radius: 999px;
+}
+
+.widget-volume scale slider {
+  background: @on_surface;
+  border: none;
+  box-shadow: none;
+  min-width: 14px;
+  min-height: 14px;
+  margin: -4px;
+}
+
+/* --- mpris (now playing) --- */
+
+.widget-mpris {
+  padding: 0;
+}
+
+.widget-mpris .widget-mpris-player {
+  margin: 8px;
+  border-radius: var(--border-radius);
+  box-shadow: none;
+}
+
+.widget-mpris .widget-mpris-player .mpris-overlay {
+  padding: 12px;
+  background-color: var(--mpris-album-art-overlay);
+  border-radius: var(--border-radius);
+}
+
+.widget-mpris .widget-mpris-player .mpris-overlay .widget-mpris-album-art {
+  border-radius: var(--border-radius);
+  -gtk-icon-size: var(--mpris-album-art-icon-size);
+}
+
+.widget-mpris .widget-mpris-player .mpris-overlay button {
+  border-radius: 100%;
+  background: transparent;
+}
+
+.widget-mpris .widget-mpris-player .mpris-overlay button:hover {
+  background: var(--mpris-button-hover);
+}
