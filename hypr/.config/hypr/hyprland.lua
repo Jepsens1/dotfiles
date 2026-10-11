@@ -1,7 +1,7 @@
 ------------------
 ---- MONITORS ----
 ------------------
-local colors = require("matugen.colors")
+local colors = require("custom.colors")
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 hl.monitor({
     output   = "HDMI-A-2",
