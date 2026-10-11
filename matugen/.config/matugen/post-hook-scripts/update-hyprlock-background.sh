@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Symlink the wallpaper matugen just applied to a fixed path
-# so hyprlock can always reference ~/.cache/matugen/current-wallpaper
-# (path is passed by matugen's post_hook as {{ image }})
 img="${1:-}"
 
 # Fall back to what awww is currently displaying
@@ -16,4 +13,5 @@ if [ -z "$img" ] && [ -d "$HOME/Pictures" ]; then
     img="$(find "$HOME/Pictures" -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) 2>/dev/null | head -n1)"
 fi
 
-[ -n "$img" ] && ln -sfn "$img" "$HOME/.cache/matugen/current-wallpaper"
+mkdir -p "$HOME/.cache/theme"
+[ -n "$img" ] && ln -sfn "$img" "$HOME/.cache/theme/current-wallpaper"

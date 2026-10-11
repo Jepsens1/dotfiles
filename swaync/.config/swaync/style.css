@@ -7,7 +7,7 @@
  *   makes these rules win over GTK + factory CSS.
  *
  * Colors:
- *   @import below pulls matugen @define-color names
+ *   @import below pulls custom @define-color names
  *   (@surface, @primary, @error, …) from colors/colors.css
  *
  * config.json cannot contain comments (strict JSON). Notes:
@@ -27,7 +27,7 @@
 }
 
 :root {
-  /* Mapped to matugen. Factory CSS still reads these var() names. */
+  /* Mapped to custom css. Factory CSS still reads these var() names. */
   --cc-bg: @surface;
   --noti-border-color: @outline_variant;
   --noti-bg-darker: @surface_container_low;

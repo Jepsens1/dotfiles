@@ -12,7 +12,15 @@ stow */
 ./install.sh
 ```
 
-`install.sh` asks for your password if `yay` is missing. Do not run it as root. It installs the packages, mise, OpenCode
+`install.sh` asks for your password if `yay` is missing. Do not run it as root. It installs the packages, mise, and OpenCode, and enables `swaync` for the graphical session. Do not start Hyprland yet.
+
+From the TTY, generate theme files before starting Hyprland. `install.sh` does not. Hyprland will not start without `~/.config/hypr/custom/colors.lua`.
+
+```bash
+matugen image ~/.local/share/wallpapers/tokyo-night-moon/arch.png
+```
+
+Any image works. Post-hooks may fail in the TTY. That is fine if `colors.lua` was written.
 
 `ufw` is installed and not enabled. Enable it on a machine you own. Skip that on a work network that already has firewall rules.
 

@@ -13,6 +13,8 @@ fi
 
 yay -S --needed - < packages.txt
 
+systemctl --user enable swaync
+
 curl -fsSL https://mise.run | sh
 "$HOME/.local/bin/mise" install
 

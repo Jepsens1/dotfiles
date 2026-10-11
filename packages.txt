@@ -32,6 +32,7 @@ pacman-contrib
 papirus-icon-theme
 pavucontrol
 pipewire
+power-profiles-daemon
 pipewire-pulse
 qt5-wayland
 qt6-wayland
