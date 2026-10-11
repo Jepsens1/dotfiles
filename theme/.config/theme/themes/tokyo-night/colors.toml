@@ -1,5 +1,6 @@
 name = "Tokyo Night"
 mode = "dark"
+opencode = "tokyonight"
 
 accent = "#7aa2f7"			# blue
 background = "#1a1b26"			# bg

@@ -37,10 +37,13 @@ To add a theme, copy `tokyo-night` and change the hex values. Do not invent colo
 ```text
 theme/.config/theme/themes/<id>/colors.toml
 theme/.config/theme/themes/<id>/ghostty          # optional, official terminal theme
+theme/.config/theme/themes/<id>/vscode.json      # optional, official editor theme
 wallpapers/.local/share/wallpapers/<id>/
 ```
 
 `ghostty` is copied as-is. Leave it out only if the theme has no official Ghostty file. `color0` through `color15` in `colors.toml` should match that file, so Firefox and the terminal agree.
+
+`vscode.json` names an editor theme and its extension. `theme-apply` installs the extension if it is missing and sets it in VSCodium. Set `opencode` in `colors.toml` to a built-in OpenCode theme name, such as `tokyonight`. Matugen sets OpenCode to `system`, so it follows the terminal colors just generated.
 
 Restow after adding the files. Restart Elephant so it loads the new theme. Walker will not see it until then.
 

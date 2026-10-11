@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import re
 import shutil
 import subprocess
@@ -24,6 +25,12 @@ PYWALFOX_COLORS = Path.home() / ".cache/wal/colors.json"
 PYWALFOX_UPDATE = Path.home() / ".local/share/mise/shims/pywalfox"
 HYPRLOCK_BG = Path.home() / ".config/matugen/post-hook-scripts/update-hyprlock-background.sh"
 AWWW = ["awww", "img", "--transition-type", "center", "--transition-fps", "60"]
+OPENCODE_CLI = Path.home() / ".config/opencode/cli.json"
+OPENCODE_TUI = Path.home() / ".config/opencode/tui.json"
+EDITORS = (
+    ("codium", Path.home() / ".config/VSCodium/User/settings.json"),
+    ("code", Path.home() / ".config/Code/User/settings.json"),
+)
 
 def theme_root() -> Path:
     stowed = Path.home() / ".config/theme"
@@ -68,6 +75,60 @@ def render(template: str, colors: dict[str, str]) -> str:
     return PLACEHOLDER.sub(replace, template)
 
 
+def read_json(path: Path) -> dict:
+    if not path.is_file():
+        return {}
+    return json.loads(path.read_text())
+
+
+def write_json(path: Path, data: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2) + "\n")
+
+
+def extension_installed(command: str, extension: str) -> bool:
+    result = subprocess.run([command, "--list-extensions"], capture_output=True, text=True)
+    return extension in result.stdout.splitlines()
+
+
+def set_vscode(theme_dir: Path) -> None:
+    descriptor = theme_dir / "vscode.json"
+    if not descriptor.is_file():
+        return
+    data = json.loads(descriptor.read_text())
+    name = data.get("name") or ""
+    extension = data.get("extension") or ""
+    if not name:
+        return
+    for command, settings in EDITORS:
+        if shutil.which(command) is None:
+            continue
+        if extension and not extension_installed(command, extension):
+            subprocess.run([command, "--install-extension", extension], check=False)
+        current = read_json(settings)
+        current["workbench.colorTheme"] = name
+        write_json(settings, current)
+        print(f"Set {command} color theme to {name}")
+
+
+def set_opencode(name: str, mode: str) -> None:
+    data = read_json(OPENCODE_CLI)
+    theme = data.get("theme")
+    if not isinstance(theme, dict):
+        theme = {}
+    theme["name"] = name
+    theme["mode"] = mode
+    data["theme"] = theme
+    data.setdefault("$schema", "https://opencode.ai/v2/cli.json")
+    write_json(OPENCODE_CLI, data)
+    if OPENCODE_TUI.is_file():
+        tui = read_json(OPENCODE_TUI)
+        if isinstance(tui.get("theme"), str):
+            tui["theme"] = name
+            write_json(OPENCODE_TUI, tui)
+    print(f"Set OpenCode theme to {name}")
+
+
 def set_wallpaper(image: Path) -> None:
     subprocess.run([*AWWW, str(image)], check=False)
     if HYPRLOCK_BG.is_file():
@@ -84,6 +145,7 @@ def apply(theme_id: str, image: Path | None = None) -> None:
         if image is None:
             sys.exit("Matugen needs a wallpaper")
         subprocess.run(["matugen", "image", "--source-color-index", "0", str(image)], check=True)
+        set_opencode("system", "system")
         return
 
     root = theme_root()
@@ -130,6 +192,10 @@ def apply(theme_id: str, image: Path | None = None) -> None:
     PYWALFOX_COLORS.write_text(render((root / "templates" / "pywalfox.json.tpl").read_text(), colors))
     print(f"Wrote {PYWALFOX_COLORS}")
     subprocess.run([str(PYWALFOX_UPDATE), "update"], check=False)
+
+    set_vscode(theme_dir)
+    if colors.get("opencode"):
+        set_opencode(colors["opencode"], colors.get("mode", "dark"))
 
     if image is not None:
         set_wallpaper(image)
