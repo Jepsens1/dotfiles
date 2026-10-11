@@ -84,14 +84,16 @@ tooltip label {
     box-shadow: none;
     text-shadow: none;
 }
-#custom-launcher,
+
+#custom-launcher { color: @mod_launcher; }
+#custom-notification { color: @mod_notification; }
+#custom-yay { color: @mod_packages; }
+#cpu { color: @mod_cpu; }
+#network { color: @mod_network; }
+#wireplumber { color: @mod_audio; }
+
 #clock,
-#cpu,
 #custom-media,
-#custom-notification,
-#custom-yay,
-#wireplumber,
-#network,
 #battery,
 #power-profiles-daemon,
 #tray,
@@ -105,8 +107,8 @@ tooltip label {
 }
 
 #workspaces button:hover {
-    background-color: @secondary;
-    color: @on_secondary;
+    background-color: @primary;
+    color: @on_primary;
 }
 
 #workspaces button.urgent {

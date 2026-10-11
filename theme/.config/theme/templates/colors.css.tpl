@@ -1,0 +1,22 @@
+@define-color background {{ background }};
+@define-color surface {{ background }};
+@define-color surface_container_low {{ background_dark }};
+@define-color surface_container {{ background_highlight }};
+@define-color surface_container_high {{ gutter }};
+@define-color surface_container_highest {{ border }};
+@define-color outline {{ border }};
+@define-color outline_variant {{ gutter }};
+@define-color on_surface {{ foreground }};
+@define-color on_surface_variant {{ comment }};
+@define-color primary {{ accent }};
+@define-color on_primary {{ background }};
+@define-color tertiary {{ yellow }};
+@define-color error {{ red }};
+@define-color on_error {{ background }};
+
+@define-color mod_launcher {{ foreground }};
+@define-color mod_notification {{ foreground }};
+@define-color mod_packages {{ orange }};
+@define-color mod_cpu {{ yellow }};
+@define-color mod_network {{ magenta }};
+@define-color mod_audio {{ teal }};

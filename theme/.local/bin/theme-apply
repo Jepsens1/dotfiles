@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+
+import re
+import shutil
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+PLACEHOLDER = re.compile(r"\{\{\s*([A-Za-z0-9_]+)\s*\}\}")
+HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
+
+WAYBAR_COLORS = Path.home() / ".config/waybar/colors/custom.css"
+GHOSTTY_COLORS = Path.home() / ".config/ghostty/colors"
+WALKER_COLORS = Path.home() / ".config/walker/themes/custom/colors.css"
+SWAYNC_COLORS = Path.home() / ".config/swaync/colors/colors.css"
+GTK3_COLORS = Path.home() / ".config/gtk-3.0/colors.css"
+GTK4_COLORS = Path.home() / ".config/gtk-4.0/colors.css"
+GTK_RELOAD = Path.home() / ".config/matugen/post-hook-scripts/gtk-themes-reload.sh"
+HYPR_COLORS_LUA = Path.home() / ".config/hypr/custom/colors.lua"
+HYPR_COLORS_CONF = Path.home() / ".config/hypr/custom/colors.conf"
+BTOP_THEME = Path.home() / ".config/btop/themes/custom.theme"
+PYWALFOX_COLORS = Path.home() / ".cache/wal/colors.json"
+PYWALFOX_UPDATE = Path.home() / ".local/share/mise/shims/pywalfox"
+HYPRLOCK_BG = Path.home() / ".config/matugen/post-hook-scripts/update-hyprlock-background.sh"
+AWWW = ["awww", "img", "--transition-type", "center", "--transition-fps", "60"]
+
+def theme_root() -> Path:
+    stowed = Path.home() / ".config/theme"
+    if (stowed / "themes").is_dir():
+        return stowed
+    # theme/.local/bin/theme-apply -> theme/.config/theme
+    repo = Path(__file__).resolve().parents[2] / ".config/theme"
+    if (repo / "themes").is_dir():
+        return repo
+    sys.exit("Could not find themes/. Stow the theme package first.")
+
+def load_colors(path: Path) -> dict[str, str]:
+    with path.open("rb") as handle:
+        data = tomllib.load(handle)
+    return {key: value for key, value in data.items() if isinstance(value, str)}
+
+def source_name(name: str) -> str:
+    return name[:-4] if name.endswith("_hex") else name
+
+
+def render(template: str, colors: dict[str, str]) -> str:
+    missing = sorted(
+        name for name in PLACEHOLDER.findall(template) if source_name(name) not in colors
+    )
+    if missing:
+        sys.exit(f"Missing colors.toml keys: {', '.join(missing)}")
+
+    def replace(match: re.Match[str]) -> str:
+        name = match.group(1)
+        if name.endswith("_hex"):
+            source = colors.get(name[:-4])
+            if source is None or not HEX.fullmatch(source):
+                sys.exit(f"{name} needs a #RRGGBB color named {name[:-4]}")
+            return source[1:]
+        value = colors.get(name)
+        if value is None:
+            sys.exit(f"Missing colors.toml key: {name}")
+        if not HEX.fullmatch(value):
+            sys.exit(f"{name} must be #RRGGBB, got {value!r}")
+        return value
+
+    return PLACEHOLDER.sub(replace, template)
+
+
+def set_wallpaper(image: Path) -> None:
+    subprocess.run([*AWWW, str(image)], check=False)
+    if HYPRLOCK_BG.is_file():
+        subprocess.run([str(HYPRLOCK_BG), str(image)], check=False)
+
+
+def apply(theme_id: str, image: Path | None = None) -> None:
+    if "/" in theme_id or theme_id in {"", ".", ".."}:
+        sys.exit(f"Invalid theme name: {theme_id}")
+    if image is not None and not image.is_file():
+        sys.exit(f"Wallpaper does not exist: {image}")
+
+    if theme_id == "matugen":
+        if image is None:
+            sys.exit("Matugen needs a wallpaper")
+        subprocess.run(["matugen", "image", "--source-color-index", "0", str(image)], check=True)
+        return
+
+    root = theme_root()
+    theme_dir = root / "themes" / theme_id
+    colors_path = theme_dir / "colors.toml"
+    if not colors_path.is_file():
+        sys.exit(f"No colors.toml in {theme_dir}")
+
+    colors = load_colors(colors_path)
+    css = render((root / "templates" / "colors.css.tpl").read_text(), colors)
+    for path in (WAYBAR_COLORS, WALKER_COLORS, SWAYNC_COLORS):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(css)
+        print(f"Wrote {path}")
+    subprocess.run(["pkill", "-SIGUSR2", "waybar"], check=False)
+    subprocess.run(["swaync-client", "-rs"], check=False)
+
+    gtk = render((root / "templates" / "gtk.css.tpl").read_text(), colors)
+    for path in (GTK3_COLORS, GTK4_COLORS):
+        path.write_text(gtk)
+        print(f"Wrote {path}")
+    subprocess.run([str(GTK_RELOAD), colors.get("mode", "dark")], check=False)
+
+    for template, output in (
+        ("hyprland.lua.tpl", HYPR_COLORS_LUA),
+        ("hyprlock.conf.tpl", HYPR_COLORS_CONF),
+    ):
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(render((root / "templates" / template).read_text(), colors))
+        print(f"Wrote {output}")
+
+    ghostty_source = theme_dir / "ghostty"
+    if ghostty_source.is_file():
+        shutil.copyfile(ghostty_source, GHOSTTY_COLORS)
+        subprocess.run(["pkill", "-SIGUSR2", "ghostty"], check=False)
+        print(f"Copied ghostty to {GHOSTTY_COLORS}")
+
+    BTOP_THEME.parent.mkdir(parents=True, exist_ok=True)
+    BTOP_THEME.write_text(render((root / "templates" / "btop.theme.tpl").read_text(), colors))
+    print(f"Wrote {BTOP_THEME}")
+    subprocess.run(["pkill", "-USR2", "btop"], check=False)
+
+    PYWALFOX_COLORS.parent.mkdir(parents=True, exist_ok=True)
+    PYWALFOX_COLORS.write_text(render((root / "templates" / "pywalfox.json.tpl").read_text(), colors))
+    print(f"Wrote {PYWALFOX_COLORS}")
+    subprocess.run([str(PYWALFOX_UPDATE), "update"], check=False)
+
+    if image is not None:
+        set_wallpaper(image)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) not in {2, 3}:
+        sys.exit(f"Usage: {Path(sys.argv[0]).name} <theme> [wallpaper]")
+    wallpaper = Path(sys.argv[2]) if len(sys.argv) == 3 else None
+    apply(sys.argv[1], wallpaper)

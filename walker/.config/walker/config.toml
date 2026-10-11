@@ -119,6 +119,15 @@ fallback = [
 
 dmenu = [{ action = "select", default = true, bind = "Return" }]
 
+"menus:themes" = [
+  { action = "menus:open", default = true, bind = "Return", after = "Nothing" },
+]
+
+"menus:wallpapers" = [
+  { action = "menus:default", default = true, bind = "Return", after = "Close" },
+  { action = "menus:parent", label = "back", bind = "Escape", after = "Nothing" },
+]
+
 providerlist = [
   { action = "activate", default = true, bind = "Return", after = "ClearReload" },
 ]

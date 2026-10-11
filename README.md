@@ -17,16 +17,32 @@ stow */
 From the TTY, generate theme files before starting Hyprland. `install.sh` does not. Hyprland will not start without `~/.config/hypr/custom/colors.lua`.
 
 ```bash
-matugen image ~/.local/share/wallpapers/tokyo-night-moon/arch.png
+matugen image ~/.local/share/wallpapers/matugen/<image>.png
 ```
 
-Any image works. Post-hooks may fail in the TTY. That is fine if `colors.lua` was written.
+Any image in that directory works. Post-hooks may fail in the TTY. That is fine if `colors.lua` was written.
 
 `ufw` is installed and not enabled. Enable it on a machine you own. Skip that on a work network that already has firewall rules.
 
 ## Current machine
 
 `hyprland.lua` and `hyprlock.conf` use monitor `HDMI-A-2` and keyboard layout `dk`. Change those if this PC is different. `hyprctl monitors` prints the output name.
+
+## Themes
+
+Super+T opens the theme menu. Pick a theme, then a wallpaper from that theme only. Matugen builds colors from the image. A custom theme uses the palette in `theme/.config/theme/themes/<id>/colors.toml`.
+
+To add a theme, copy `tokyo-night` and change the hex values. Do not invent colors. Use that theme's published palette. The wallpaper folder must have the same name:
+
+```text
+theme/.config/theme/themes/<id>/colors.toml
+theme/.config/theme/themes/<id>/ghostty          # optional, official terminal theme
+wallpapers/.local/share/wallpapers/<id>/
+```
+
+`ghostty` is copied as-is. Leave it out only if the theme has no official Ghostty file. `color0` through `color15` in `colors.toml` should match that file, so Firefox and the terminal agree.
+
+Restow after adding the files. Restart Elephant so it loads the new theme. Walker will not see it until then.
 
 ## After install
 

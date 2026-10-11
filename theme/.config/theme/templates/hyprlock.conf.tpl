@@ -1,0 +1,5 @@
+$primary = rgba({{ accent_hex }}ff)
+$secondary = rgba({{ magenta_hex }}ff)
+$error = rgba({{ red_hex }}ff)
+$on_surface = rgba({{ foreground_hex }}ff)
+$inverse_on_surface = rgba({{ background_dark_hex }}ff)
