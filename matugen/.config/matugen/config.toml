@@ -40,11 +40,6 @@ post_hook = "~/.config/matugen/post-hook-scripts/update-hyprlock-background.sh '
 input_path = '~/.config/matugen/templates/hyprland-colors.conf'
 output_path = '~/.config/hypr/matugen/colors.conf'
 
-[templates.starship]
-input_path = '~/.config/matugen/templates/starship-colors.toml'
-output_path = '~/.config/starship/palettes.toml'
-post_hook = '~/.config/matugen/post-hook-scripts/starship-palette.sh'
-
 [templates.pywalfox]
 input_path = '~/.config/matugen/templates/pywalfox-colors.json'
 output_path = '~/.cache/wal/colors.json'
