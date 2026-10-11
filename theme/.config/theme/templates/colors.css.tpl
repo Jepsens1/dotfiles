@@ -20,3 +20,4 @@
 @define-color mod_cpu {{ yellow }};
 @define-color mod_network {{ magenta }};
 @define-color mod_audio {{ teal }};
+@define-color mod_media {{ purple }};

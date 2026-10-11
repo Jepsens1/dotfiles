@@ -91,9 +91,9 @@ tooltip label {
 #cpu { color: @mod_cpu; }
 #network { color: @mod_network; }
 #wireplumber { color: @mod_audio; }
+#custom-media { color: @mod_media; }
 
 #clock,
-#custom-media,
 #battery,
 #power-profiles-daemon,
 #tray,
