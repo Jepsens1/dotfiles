@@ -17,13 +17,13 @@ WALKER_COLORS = Path.home() / ".config/walker/themes/custom/colors.css"
 SWAYNC_COLORS = Path.home() / ".config/swaync/colors/colors.css"
 GTK3_COLORS = Path.home() / ".config/gtk-3.0/colors.css"
 GTK4_COLORS = Path.home() / ".config/gtk-4.0/colors.css"
-GTK_RELOAD = Path.home() / ".config/matugen/post-hook-scripts/gtk-themes-reload.sh"
+GTK_RELOAD = Path.home() / ".config/theme/scripts/gtk-themes-reload.sh"
 HYPR_COLORS_LUA = Path.home() / ".config/hypr/custom/colors.lua"
 HYPR_COLORS_CONF = Path.home() / ".config/hypr/custom/colors.conf"
 BTOP_THEME = Path.home() / ".config/btop/themes/custom.theme"
 PYWALFOX_COLORS = Path.home() / ".cache/wal/colors.json"
 PYWALFOX_UPDATE = Path.home() / ".local/share/mise/shims/pywalfox"
-HYPRLOCK_BG = Path.home() / ".config/matugen/post-hook-scripts/update-hyprlock-background.sh"
+HYPRLOCK_BG = Path.home() / ".config/theme/scripts/update-hyprlock-background.sh"
 AWWW = ["awww", "img", "--transition-type", "center", "--transition-fps", "60"]
 OPENCODE_CLI = Path.home() / ".config/opencode/cli.json"
 OPENCODE_TUI = Path.home() / ".config/opencode/tui.json"
@@ -140,13 +140,6 @@ def apply(theme_id: str, image: Path | None = None) -> None:
         sys.exit(f"Invalid theme name: {theme_id}")
     if image is not None and not image.is_file():
         sys.exit(f"Wallpaper does not exist: {image}")
-
-    if theme_id == "matugen":
-        if image is None:
-            sys.exit("Matugen needs a wallpaper")
-        subprocess.run(["matugen", "image", "--source-color-index", "0", str(image)], check=True)
-        set_opencode("system", "system")
-        return
 
     root = theme_root()
     theme_dir = root / "themes" / theme_id

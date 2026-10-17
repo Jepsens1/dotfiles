@@ -18,30 +18,29 @@ Generated files sit beside those symlinks in real directories. Do not add them t
 - `~/.config/gtk-3.0/colors.css` and `~/.config/gtk-4.0/colors.css`
 - `~/.config/btop/themes/custom.theme`
 
-`swaync` config belongs in the `swaync` package. `swappy/.config/swaync` is empty; do not put files there.
+`swaync` config belongs in the `swaync` package. `swappy/.config/swaync` is empty; do not put files there. There is no `wallpapers` package. Images live only at `~/.local/share/wallpapers/<id>/`.
 
 ## Themes
 
-Two generators write the same paths above. Editing one does not update the other.
+`theme-apply <id> [wallpaper]` is the only theme generator. It reads `theme/.config/theme/themes/<id>/colors.toml` and `theme/.config/theme/templates/*.tpl`. Placeholders are `{{key}}` and `{{key_hex}}` (`#` stripped). Non-hex keys (`name`, `mode`, `opencode`) must not appear in a template. `themes/<id>/ghostty` is copied as-is, not rendered. `themes/<id>/vscode.json` is `{ "name", "extension" }`; `theme-apply` sets `workbench.colorTheme` in VSCodium or Code and installs the extension if missing. `opencode` in `colors.toml` is a built-in OpenCode theme name written to `~/.config/opencode/cli.json`. Do not stow that file or VSCodium `settings.json`. Do not add a second generator.
 
-- Named theme: `theme-apply <id> [wallpaper]` reads `theme/.config/theme/themes/<id>/colors.toml` and `theme/.config/theme/templates/*.tpl`. Placeholders are `{{key}}` and `{{key_hex}}` (`#` stripped). `themes/<id>/ghostty` is copied as-is, not rendered. `themes/<id>/vscode.json` is `{ "name", "extension" }`; `theme-apply` sets `workbench.colorTheme` in VSCodium or Code and installs the extension if missing. `opencode` in `colors.toml` is a built-in OpenCode theme name written to `~/.config/opencode/cli.json`. Matugen sets that theme to `system` and does not touch the editor.
-- Matugen: `theme-apply matugen <image>` runs `matugen image --source-color-index 0`. Templates in `matugen/.config/matugen/templates/` use matugen syntax (`<* for *>`, `{{value.default.hex}}`, `{{value.default.hex_stripped}}`). Do not mix the two languages. `matugen` is not a `colors.toml` theme.
+`hyprland.lua` does `require("custom.colors")` from the generated file, not from the repo. Hyprland will not start without it, and `install.sh` does not create it. It only reads `colors.primary` and `colors.outline_variant`. The Lua template sets those from `accent` and `border` as `0xff` plus stripped hex, not from `purple`. `theme-apply` does not reload Hyprland. Do not set border colors with `hyprctl keyword`. `hyprlock.conf` sources the generated conf at lock time. The template sets `$primary` from `accent`, `$secondary` from `magenta`, `$error` from `red`, `$on_surface` from `foreground`, and `$inverse_on_surface` from `background_dark`. Its background is the symlink `~/.cache/theme/current-wallpaper`.
 
-`hyprland.lua` does `require("custom.colors")` from the generated file, not from the repo. Hyprland will not start without it, and `install.sh` does not create it. It only reads `colors.primary` and `colors.outline_variant`. The named-theme Lua template sets those from `purple` and `border`. `hyprlock.conf` sources the generated conf and expects `$primary`, `$secondary`, `$error`, `$on_surface`, `$inverse_on_surface`. Its background is the symlink `~/.cache/theme/current-wallpaper`.
+GTK light/dark reload is `theme/.config/theme/scripts/gtk-themes-reload.sh`. The hyprlock wallpaper symlink is `update-hyprlock-background.sh` in that same directory. `theme-apply` calls both. Keep those scripts.
 
-Waybar, swaync, and walker CSS use Material names (`@surface`, `@primary`, `@on_surface`, `mod_*`), not `colors.toml` keys. Named themes map those names in `colors.css.tpl`. A new CSS color must be added to both CSS templates. Import paths differ (`colors/custom.css`, `colors/colors.css`, `colors.css`); do not unify them. Walker's committed theme is `theme = "custom"`. Ghostty's committed config is only `config-file = colors`; do not put a palette there.
+Waybar, swaync, and walker CSS use Material names (`@surface`, `@primary`, `@on_surface`, `mod_*`), not `colors.toml` keys. Themes map those names in `colors.css.tpl`. A new CSS color goes in that template only. Import paths differ (`colors/custom.css`, `colors/colors.css`, `colors.css`); do not unify them. Walker's committed theme is `theme = "custom"`. Ghostty's committed config is only `config-file = colors`; do not put a palette there. Live `~/.config/btop/btop.conf` is not in the repo and already points at the generated theme. Do not add a `btop.conf` that selects a bundled theme.
 
-Elephant scans only the stowed path `~/.config/theme/themes/*/colors.toml`. `theme-apply` can fall back to the repo; the menus cannot. Wallpaper images must be at the top of `~/.local/share/wallpapers/<id>/` (png/jpg/jpeg/webp). The repo's `matugen` wallpaper directory is empty. Other folders there (Graphite*) are not in this repo and are not menu entries.
+Elephant scans only the stowed path `~/.config/theme/themes/*/colors.toml`. `theme-apply` can fall back to the repo; the menus cannot. Elephant loads menu Lua at startup. Restart it after editing `themes.lua` or `wallpapers.lua`. `Cache = false` does not reload those scripts. Wallpaper images must be at the top of `~/.local/share/wallpapers/<id>/` (png/jpg/jpeg/webp). The wallpaper `find` must keep `-H`; a symlink starting point is empty without it. Other folders there (Graphite*) are not in this repo and are not menu entries. The menu runs `~/.local/bin/theme-apply` only. Walker has `close_when_open = true`, so a second `walker` closes the open one. Do not add a second `walker -d` picker.
 
 Committed GTK `settings.ini` is the boot default (`adw-gtk3-dark`). `theme-apply` switches light/dark with `gsettings`, not by editing those files. `gtk/.local/share/icons/default/index.theme` is written by nwg-look; do not edit it. Cursor files under `bibata/` are the vendored Bibata-Modern-Ice theme.
 
-Starship uses ANSI names in `starship.toml`. It is not part of either theme pipeline. Neovim's colorscheme is tokyonight `style = "moon"` and is not driven by `theme-apply`.
+Starship uses ANSI names in `starship.toml`. It is not part of the theme pipeline. Neovim's colorscheme is tokyonight `style = "moon"` and is not driven by `theme-apply`.
 
 ## Hyprland
 
 Config is `hypr/.config/hypr/hyprland.lua` (`hl.*`), not `hyprland.conf`. Do not add one. LSP stubs are `/usr/share/hypr/stubs` (`.luarc.json`). `hl` is injected by Hyprland. Reload with `hyprctl reload`.
 
-`hypridle.conf` and the elephant power menu dispatch with `hyprctl dispatch 'hl.dsp....'`, not classic keywords (`dpms off`, `exit`).
+`hypridle.conf` and the elephant power menu dispatch with `hyprctl dispatch 'hl.dsp....'`, not classic keywords (`dpms off`, `exit`). Hyprland's `PATH` does not include `~/.local/bin`. Binds must use a command from `/usr/bin` (`walker`) or a full path.
 
 Do not normalize this machine: monitor `HDMI-A-2` (including every `monitor =` in `hyprlock.conf`), mode `3840x2160@240`, scale `1.25`, `kb_layout = "dk"`. `hyprctl monitors` prints the output name. hyprlock fonts are SF Pro (`apple-fonts`). The avatar is `hypr/.face.icon`, stowed to `~/.face.icon`.
 
@@ -49,7 +48,7 @@ Do not normalize this machine: monitor `HDMI-A-2` (including every `monitor =` i
 
 System packages, official and AUR, are one name per line in `packages.txt` (`yay -S --needed - < packages.txt`). Do not re-run `install.sh` to apply config edits, and do not run it as root. `ufw` is installed and not enabled; do not enable it.
 
-`pywalfox` is `pypi:pywalfox` in `mise/.config/mise/config.toml`, not an Arch package. The matugen post-hook calls `$HOME/.local/share/mise/shims/pywalfox`. Do not drop `--shims` from the zsh `mise activate` line. zsh plugins are sourced from `/usr/share/zsh/plugins/`, not oh-my-zsh.
+`pywalfox` is `pypi:pywalfox` in `mise/.config/mise/config.toml`, not an Arch package. `theme-apply` calls `$HOME/.local/share/mise/shims/pywalfox`. Do not drop `--shims` from the zsh `mise activate` line. zsh plugins are sourced from `/usr/share/zsh/plugins/`, not oh-my-zsh.
 
 ## Neovim
 

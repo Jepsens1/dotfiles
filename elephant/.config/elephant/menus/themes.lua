@@ -19,15 +19,6 @@ local function theme_label(dir, id)
 end
 
 function GetEntries()
-	local entries = {
-		{
-			Text = "Matugen",
-			Value = "matugen",
-			Icon = "preferences-desktop-wallpaper",
-			SubMenu = "wallpapers",
-		},
-	}
-
 	local handle = io.popen("find " .. string.format("%q", theme_root) .. " -mindepth 2 -maxdepth 2 -name colors.toml | sort")
 	if handle then
 		for path in handle:lines() do

@@ -20,7 +20,6 @@ hyprpolkitagent
 inter-font
 lazygit
 luarocks
-matugen
 nautilus
 neovim
 networkmanager

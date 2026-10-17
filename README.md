@@ -17,10 +17,10 @@ stow */
 From the TTY, generate theme files before starting Hyprland. `install.sh` does not. Hyprland will not start without `~/.config/hypr/custom/colors.lua`.
 
 ```bash
-matugen image ~/.local/share/wallpapers/matugen/<image>.png
+theme-apply tokyo-night
 ```
 
-Any image in that directory works. Post-hooks may fail in the TTY. That is fine if `colors.lua` was written.
+A wallpaper is optional. GTK reload may fail in the TTY. That is fine if `colors.lua` was written.
 
 `ufw` is installed and not enabled. Enable it on a machine you own. Skip that on a work network that already has firewall rules.
 
@@ -30,7 +30,7 @@ Any image in that directory works. Post-hooks may fail in the TTY. That is fine 
 
 ## Themes
 
-Super+T opens the theme menu. Pick a theme, then a wallpaper from that theme only. Matugen builds colors from the image. A custom theme uses the palette in `theme/.config/theme/themes/<id>/colors.toml`.
+Super+T opens the theme menu. Pick a theme, then a wallpaper from that theme only. A theme uses the palette in `theme/.config/theme/themes/<id>/colors.toml`.
 
 To add a theme, copy `tokyo-night` and change the hex values. Do not invent colors. Use that theme's published palette. The wallpaper folder must have the same name:
 
@@ -43,7 +43,7 @@ wallpapers/.local/share/wallpapers/<id>/
 
 `ghostty` is copied as-is. Leave it out only if the theme has no official Ghostty file. `color0` through `color15` in `colors.toml` should match that file, so Firefox and the terminal agree.
 
-`vscode.json` names an editor theme and its extension. `theme-apply` installs the extension if it is missing and sets it in VSCodium. Set `opencode` in `colors.toml` to a built-in OpenCode theme name, such as `tokyonight`. Matugen sets OpenCode to `system`, so it follows the terminal colors just generated.
+`vscode.json` names an editor theme and its extension. `theme-apply` installs the extension if it is missing and sets it in VSCodium. Set `opencode` in `colors.toml` to a built-in OpenCode theme name, such as `tokyonight`.
 
 Restow after adding the files. Restart Elephant so it loads the new theme. Walker will not see it until then.
 
