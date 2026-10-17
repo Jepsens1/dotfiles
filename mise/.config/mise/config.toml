@@ -8,3 +8,6 @@ ruby = "latest"
 rust = "latest"
 uv = "latest"
 "pypi:pywalfox" = "2.9.0"
+
+[settings.self_update]
+auto = true
