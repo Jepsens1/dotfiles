@@ -8,6 +8,7 @@ cliphist
 fastfetch
 fd
 firefox
+figlet
 fzf
 ghostty
 git

@@ -1,0 +1,5 @@
+global terminal    = "ghostty"
+global fileManager = "nautilus"
+global menu        = "walker"
+global powermenu   = "walker --provider menus:power"
+global swaync      = "swaync-client -t -sw"
