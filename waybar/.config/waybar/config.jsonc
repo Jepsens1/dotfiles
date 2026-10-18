@@ -1,15 +1,23 @@
 {
+	"include": [
+		"~/.config/waybar/modules/modules.jsonc",
+		"~/.config/waybar/modules/custom-modules.jsonc"
+	],
+
 	"layer": "top",
 	"margin-top": 7,
+
 	"modules-left": [
 		"custom/launcher",
 		"hyprland/workspaces"
 	],
+
 	"modules-center": [
 		"custom/notification",
 		"clock",
 		"custom/media"
 	],
+
 	"modules-right": [
 		"custom/yay",
 		"cpu",
@@ -18,155 +26,5 @@
 		"power-profiles-daemon",
 		"network",
 		"tray"
-	],
-	"custom/launcher": {
-		"format": "󰣇",
-		"on-click": "walker"
-	},
-	"hyprland/workspaces": {
-		"format": "{name}",
-		"persistent-workspaces": {
-			"*": 5
-		}
-	},
-	"custom/notification": {
-		"tooltip": false,
-		"format": "<span size='16pt'>{icon}</span>",
-		"format-icons": {
-			"notification": "󱅫",
-			"none": "󰂜",
-			"dnd-notification": "󰂠",
-			"dnd-none": "󰪓",
-			"inhibited-notification": "󰂛",
-			"inhibited-none": "󰪑",
-			"dnd-inhibited-notification": "󰂛",
-			"dnd-inhibited-none": "󰪑"
-		},
-		"return-type": "json",
-		"exec-if": "which swaync-client",
-		"exec": "swaync-client -swb",
-		"on-click": "swaync-client -t -sw",
-		"on-click-right": "swaync-client -d -sw",
-		"escape": true
-	},
-	"clock": {
-		"timezones": [
-			"",
-			"Japan",
-			"America/New_York",
-			"Europe/London",
-			"UTC"
-		],
-		"tooltip-format": "{tz_list}",
-		"timezone-tooltip-format": "{:%H:%M %Z}",
-		"format": "{:%a, %d. %B %R}"
-	},
-	"custom/media": {
-		"format": "{}",
-		"escape": true,
-		"return-type": "json",
-		"max-length": 40,
-		"on-click": "playerctl play-pause",
-		"on-click-right": "playerctl stop",
-		"smooth-scrolling-threshold": 10, // This value was tested using a trackpad, it should be lowered if using a mouse.
-		"on-scroll-up": "playerctl next",
-		"on-scroll-down": "playerctl previous",
-		"exec": "~/.config/waybar/scripts/mediaplayer.py 2> /dev/null", // Script in resources/custom_modules folder
-	},
-	"tray": {
-		"icon-size": 16,
-		"spacing": 8
-	},
-	"cpu": {
-		"interval": 10,
-		"format": "{}% ",
-		"on-click": "exec ghostty --title=btop -e btop",
-		"max-length": 10
-	},
-	"custom/yay": {
-		"format": "{}  ",
-		"interval": 3600, // every hour
-		"exec": "checkupdates | wc -l", // # of updates
-		"exec-if": "exit 0", // always run; consider advanced run conditions
-		"on-click": "ghostty -e yay -Syu; pkill -SIGRTMIN+8 waybar", // update system
-		"signal": 8
-	},
-	"wireplumber": {
-		"format": "{volume}% {icon}",
-		"format-bluetooth": "{volume}% {icon}",
-		"format-muted": "",
-		"format-icons": {
-			"headphone": "",
-			"default": [
-				"",
-				""
-			]
-		},
-		"scroll-step": 1,
-		"on-click": "pavucontrol"
-	},
-	"network": {
-		"format": "{ifname}",
-		"format-wifi": "{essid} ",
-		"format-ethernet": "{ifname} 󰈀",
-		"format-disconnected": "",
-		"tooltip-format-wifi": "{essid} ({signalStrength}%) ",
-		"tooltip-format-ethernet": "{ifname} {ipaddr} 󰈀",
-		"tooltip-format-disconnected": "Disconnected",
-		"max-length": 50
-	},
-	"battery": {
-		"interval": 60,
-		"states": {
-			"warning": 30,
-			"critical": 15
-		},
-		"events": {
-			"on-discharging-warning": "notify-send -u normal 'Low Battery'",
-			"on-discharging-critical": "notify-send -u critical 'Very Low Battery'",
-			"on-discharging": "notify-send -u normal 'Power Switch' Discharging",
-			"on-charging": "notify-send -u normal 'Power Switch' Charging"
-		},
-		"format": "{capacity}% {icon}",
-		"format-icons": {
-			"default": [
-				"󰂎",
-				"󰁺",
-				"󰁻",
-				"󰁼",
-				"󰁽",
-				"󰁾",
-				"󰁿",
-				"󰂀",
-				"󰂁",
-				"󰂂",
-				"󰁹"
-			],
-			"charging": [
-				"󰢟",
-				"󰢜",
-				"󰂆",
-				"󰂇",
-				"󰂈",
-				"󰢝",
-				"󰂉",
-				"󰢞",
-				"󰂊",
-				"󰂋",
-				"󰂅"
-			]
-		},
-		"max-length": 25
-	},
-	"power-profiles-daemon": {
-		"format": "{icon}",
-		"tooltip-format": "Power profile: {profile}\nCPU driver: {cpu_driver}nPlatform driver: {platform_driver}",
-		"tooltip": true,
-		"format-icons": {
-			"default": "",
-			"performance": "",
-			"balanced": "",
-			"power-saver": ""
-		}
-	}
+	]
 }

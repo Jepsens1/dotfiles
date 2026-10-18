@@ -1,0 +1,108 @@
+{
+    "hyprland/workspaces": {
+        "format": "{name}",
+        "persistent-workspaces": {
+            "*": 5
+        }
+    },
+    "clock": {
+        "timezones": [
+            "",
+            "Japan",
+            "America/New_York",
+            "Europe/London",
+            "UTC"
+        ],
+        "tooltip-format": "{tz_list}",
+        "timezone-tooltip-format": "{:%H:%M %Z}",
+        "format": "{:%a, %d. %B %R}"
+    },
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    },
+    "cpu": {
+        "interval": 10,
+        "format": "{}% ",
+        "on-click": "exec ghostty --title=btop -e btop",
+        "max-length": 10
+    },
+    "wireplumber": {
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon}",
+        "format-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "default": [
+                "",
+                ""
+            ]
+        },
+        "scroll-step": 1,
+        "on-click": "pavucontrol"
+    },
+    "network": {
+        "format": "{ifname}",
+        "format-wifi": "{essid} ",
+        "format-ethernet": "{ifname} 󰈀",
+        "format-disconnected": "",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%) ",
+        "tooltip-format-ethernet": "{ifname} {ipaddr} 󰈀",
+        "tooltip-format-disconnected": "Disconnected",
+        "max-length": 50
+    },
+    "battery": {
+        "interval": 60,
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "events": {
+            "on-discharging-warning": "notify-send -u normal 'Low Battery'",
+            "on-discharging-critical": "notify-send -u critical 'Very Low Battery'",
+            "on-discharging": "notify-send -u normal 'Power Switch' Discharging",
+            "on-charging": "notify-send -u normal 'Power Switch' Charging"
+        },
+        "format": "{capacity}% {icon}",
+        "format-icons": {
+            "default": [
+                "󰂎",
+                "󰁺",
+                "󰁻",
+                "󰁼",
+                "󰁽",
+                "󰁾",
+                "󰁿",
+                "󰂀",
+                "󰂁",
+                "󰂂",
+                "󰁹"
+            ],
+            "charging": [
+                "󰢟",
+                "󰢜",
+                "󰂆",
+                "󰂇",
+                "󰂈",
+                "󰢝",
+                "󰂉",
+                "󰢞",
+                "󰂊",
+                "󰂋",
+                "󰂅"
+            ]
+        },
+        "max-length": 25
+    },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}\nCPU driver: {cpu_driver}nPlatform driver: {platform_driver}",
+        "tooltip": true,
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
+    }
+}
