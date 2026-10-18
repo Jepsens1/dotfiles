@@ -41,7 +41,7 @@ theme/.config/theme/themes/<id>/vscode.json      # optional, official editor the
 theme/.local/share/wallpapers/<id>/
 ```
 
-`ghostty` is copied as-is. Leave it out only if the theme has no official Ghostty file. `color0` through `color15` in `colors.toml` should match that file, so Firefox and the terminal agree.
+`ghostty` is copied as-is. Leave it out only if the theme has no official Ghostty file. `color0` through `color15` in `colors.toml` should match that file. Firefox does not use that order. `pywalfox.json.tpl` puts `background`, `accent`, `magenta`, and `foreground` in the slots Pywalfox reads.
 
 `vscode.json` names an editor theme and its extension. `theme-apply` installs the extension if it is missing and sets it in VSCodium. Set `opencode` in `colors.toml` to a built-in OpenCode theme name, such as `tokyonight`.
 
