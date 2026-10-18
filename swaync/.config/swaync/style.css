@@ -7,8 +7,8 @@
  *   makes these rules win over GTK + factory CSS.
  *
  * Colors:
- *   @import below pulls custom @define-color names
- *   (@surface, @primary, @error, …) from colors/colors.css
+ *   @import below pulls @define-color names from colors/colors.css.
+ *   Those names are colors.toml roles (background, accent, red, …).
  *
  * config.json cannot contain comments (strict JSON). Notes:
  *   positionX/Y                 popup toasts: top-right
@@ -28,16 +28,16 @@
 
 :root {
   /* Mapped to custom css. Factory CSS still reads these var() names. */
-  --cc-bg: @surface;
-  --noti-border-color: @outline_variant;
-  --noti-bg-darker: @surface_container_low;
-  --noti-bg-hover: @surface_container_high;
-  --noti-bg-focus: @surface_container_high;
-  --noti-close-bg: @surface_container_highest;
-  --noti-close-bg-hover: @primary;
-  --text-color: @on_surface;
-  --text-color-disabled: @on_surface_variant;
-  --bg-selected: @primary;
+  --cc-bg: @background;
+  --noti-border-color: @gutter;
+  --noti-bg-darker: @background_dark;
+  --noti-bg-hover: @gutter;
+  --noti-bg-focus: @gutter;
+  --noti-close-bg: @border;
+  --noti-close-bg-hover: @accent;
+  --text-color: @foreground;
+  --text-color-disabled: @comment;
+  --bg-selected: @accent;
 
   --notification-icon-size: 48px;
   --notification-app-icon-size: calc(var(--notification-icon-size) / 3);
@@ -53,8 +53,8 @@
   --hover-transition: var(--hover-tranistion);
   --group-collapse-transition: var(--group-collapse-tranistion);
 
-  --mpris-album-art-overlay: alpha(@surface, 0.55);
-  --mpris-button-hover: alpha(@on_surface, 0.12);
+  --mpris-album-art-overlay: alpha(@background, 0.55);
+  --mpris-button-hover: alpha(@foreground, 0.12);
   --mpris-album-art-icon-size: 72px;
 }
 
@@ -79,7 +79,7 @@ blankwindow,
 }
 
 .notification {
-  background: alpha(@surface_container, 0.8);
+  background: alpha(@background_highlight, 0.8);
   border: var(--border);
   border-radius: var(--border-radius);
   padding: 12px;
@@ -87,7 +87,7 @@ blankwindow,
 
 /* Quiet critical: border only, no fill. */
 .notification.critical {
-  border-color: @error;
+  border-color: @red;
 }
 
 .close-button {
@@ -103,7 +103,7 @@ blankwindow,
 
 .close-button:hover {
   background: var(--noti-close-bg-hover);
-  color: @on_primary;
+  color: @background;
 }
 
 /* --- control center (Mod+N) --- */
@@ -148,30 +148,30 @@ blankwindow,
 /* --- do not disturb --- */
 
 .widget-dnd switch {
-  background: @surface_container_highest;
+  background: @border;
   border-radius: 999px;
 }
 
-/* Only accent: switch turns primary when DND is on. */
+/* Only accent: switch turns accent when DND is on. */
 .widget-dnd switch:checked {
-  background: @primary;
+  background: @accent;
 }
 
 .widget-dnd switch slider {
-  background: @on_surface;
+  background: @foreground;
   border-radius: 999px;
   min-width: 18px;
   min-height: 18px;
 }
 
 .widget-dnd switch:checked slider {
-  background: @on_primary;
+  background: @background;
 }
 
 /* --- volume --- */
 
 .widget-volume scale trough {
-  background: @surface_container_highest;
+  background: @border;
   border: none;
   min-height: 8px;
   border-radius: 999px;
@@ -179,12 +179,12 @@ blankwindow,
 
 /* Only accent: filled portion of the slider. */
 .widget-volume scale trough highlight {
-  background: @primary;
+  background: @accent;
   border-radius: 999px;
 }
 
 .widget-volume scale slider {
-  background: @on_surface;
+  background: @foreground;
   border: none;
   box-shadow: none;
   min-width: 14px;

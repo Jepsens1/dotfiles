@@ -1,10 +1,10 @@
 @import url("colors.css");
 
 @define-color window_bg_color @background;
-@define-color theme_fg_color @on_surface;
-@define-color accent_bg_color @primary;
-@define-color error_bg_color @error;
-@define-color error_fg_color @on_error;
+@define-color theme_fg_color @foreground;
+@define-color accent_bg_color @accent;
+@define-color error_bg_color @red;
+@define-color error_fg_color @background;
 
 * {
   all: unset;

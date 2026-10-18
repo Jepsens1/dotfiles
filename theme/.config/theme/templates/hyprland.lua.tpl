@@ -1,4 +1,4 @@
 return {
-    primary = "0xff{{ accent_hex }}",
-    outline_variant = "0xff{{ border_hex }}",
+    accent = "0xff{{ accent_hex }}",
+    border = "0xff{{ border_hex }}",
 }

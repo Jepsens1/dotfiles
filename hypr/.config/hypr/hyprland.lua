@@ -68,8 +68,8 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = colors.primary,
-            inactive_border = colors.outline_variant,
+            active_border   = colors.accent,
+            inactive_border = colors.border,
         },
 
         resize_on_border = false,

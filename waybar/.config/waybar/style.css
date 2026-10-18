@@ -14,12 +14,12 @@ window#waybar {
 }
 
 tooltip {
-  background: @surface_container;
-  border: 1px solid @outline;
+  background: @background_highlight;
+  border: 1px solid @border;
   border-radius: 0.625em;
 }
 tooltip label {
-  color: @on_surface;
+  color: @foreground;
 }
 .modules-left {
     margin-left: 0.75em;
@@ -40,7 +40,7 @@ tooltip label {
 #battery,
 #power-profiles-daemon,
 #tray {
-    background-color: @surface;
+    background-color: @background;
     margin-right: 0.5em;
     padding: 0 0.625em;
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -50,21 +50,28 @@ tooltip label {
     margin-right: 0;
 }
 
-/* Hover: primary fill — skip #workspaces so inner buttons can handle it */
-#custom-launcher:hover,
+/* Accent hover for modules without a dedicated color */
 #clock:hover,
-#cpu:hover,
-#custom-media:hover,
-#custom-notification:hover,
-#custom-yay:hover,
-#wireplumber:hover,
-#network:hover,
 #battery:hover,
 #power-profiles-daemon:hover,
 #tray:hover {
-    background-color: @primary;
-    color: @on_primary;
+    background-color: @accent;
+    color: @background;
 }
+
+/* Colored modules use their own palette color on hover. */
+#custom-launcher:hover,
+#custom-notification:hover {
+    background-color: @foreground;
+    color: @background;
+}
+
+#custom-yay:hover { background-color: @orange; color: @background; }
+#cpu:hover { background-color: @yellow; color: @background; }
+#network:hover { background-color: @magenta; color: @background; }
+#wireplumber:hover { background-color: @teal; color: @background; }
+#custom-media:hover { background-color: @purple; color: @background; }
+
 /* Workspaces: idle muted, color only on active + hover */
 #workspaces {
     padding: 0 0.6em;
@@ -85,43 +92,55 @@ tooltip label {
     text-shadow: none;
 }
 
-#custom-launcher { color: @mod_launcher; }
-#custom-notification { color: @mod_notification; }
-#custom-yay { color: @mod_packages; }
-#cpu { color: @mod_cpu; }
-#network { color: @mod_network; }
-#wireplumber { color: @mod_audio; }
-#custom-media { color: @mod_media; }
+#custom-launcher { color: @foreground; }
+#custom-notification { color: @foreground; }
+#custom-yay { color: @orange; }
+#cpu { color: @yellow; }
+#network { color: @magenta; }
+#wireplumber { color: @teal; }
+#custom-media { color: @purple; }
 
 #clock,
 #battery,
 #power-profiles-daemon,
 #tray,
 #workspaces button {
-    color: @primary;
+    color: @accent;
 }
 
 #workspaces button.active {
-    background-color: @primary;
-    color: @on_primary;
+    background-color: @accent;
+    color: @background;
 }
 
 #workspaces button:hover {
-    background-color: @primary;
-    color: @on_primary;
+    background-color: @accent;
+    color: @background;
 }
 
 #workspaces button.urgent {
-    background-color: @error;
-    color: @on_error;
+    background-color: @red;
+    color: @background;
 }
 
 #battery.warning {
-    color: @tertiary;
+    color: @yellow;
 }
 
 #battery.critical,
 #wireplumber.muted,
 #network.disconnected {
-    color: @error;
+    color: @red;
+}
+
+#battery.warning:hover {
+    background-color: @yellow;
+    color: @background;
+}
+
+#battery.critical:hover,
+#wireplumber.muted:hover,
+#network.disconnected:hover {
+    background-color: @red;
+    color: @background;
 }

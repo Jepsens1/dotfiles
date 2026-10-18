@@ -10,6 +10,24 @@ from pathlib import Path
 
 PLACEHOLDER = re.compile(r"\{\{\s*([A-Za-z0-9_]+)\s*\}\}")
 HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
+REQUIRED_ROLES = (
+    "background",
+    "background_dark",
+    "background_highlight",
+    "foreground",
+    "comment",
+    "gutter",
+    "border",
+    "accent",
+    "red",
+    "green",
+    "yellow",
+    "orange",
+    "cyan",
+    "teal",
+    "magenta",
+    "purple",
+)
 
 WAYBAR_COLORS = Path.home() / ".config/waybar/colors/custom.css"
 GHOSTTY_COLORS = Path.home() / ".config/ghostty/colors"
@@ -46,6 +64,18 @@ def load_colors(path: Path) -> dict[str, str]:
     with path.open("rb") as handle:
         data = tomllib.load(handle)
     return {key: value for key, value in data.items() if isinstance(value, str)}
+
+def palette_css(colors: dict[str, str]) -> str:
+    missing = [name for name in REQUIRED_ROLES if not HEX.fullmatch(colors.get(name, ""))]
+    if missing:
+        sys.exit(f"Missing colors.toml keys: {', '.join(missing)}")
+
+    lines = [
+        f"@define-color {key} {value};"
+        for key, value in colors.items()
+        if HEX.fullmatch(value)
+    ]
+    return "\n".join(lines) + "\n"
 
 def source_name(name: str) -> str:
     return name[:-4] if name.endswith("_hex") else name
@@ -148,7 +178,7 @@ def apply(theme_id: str, image: Path | None = None) -> None:
         sys.exit(f"No colors.toml in {theme_dir}")
 
     colors = load_colors(colors_path)
-    css = render((root / "templates" / "colors.css.tpl").read_text(), colors)
+    css = palette_css(colors)
     for path in (WAYBAR_COLORS, WALKER_COLORS, SWAYNC_COLORS):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(css)

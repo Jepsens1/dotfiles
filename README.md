@@ -32,7 +32,7 @@ A wallpaper is optional. GTK reload may fail in the TTY. That is fine if `colors
 
 Super+T opens the theme menu. Pick a theme, then a wallpaper from that theme only. A theme uses the palette in `theme/.config/theme/themes/<id>/colors.toml`.
 
-To add a theme, copy `tokyo-night` and change the hex values. Do not invent colors. Use that theme's published palette. The wallpaper folder must have the same name:
+To add a theme, copy `tokyo-night` and keep the same role keys. Change the hex values. Do not invent colors. Use that theme's published palette. Native names, such as `iris` or `mauve`, go in the comments, not in the keys. The wallpaper folder must have the same name:
 
 ```text
 theme/.config/theme/themes/<id>/colors.toml
