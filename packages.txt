@@ -21,6 +21,7 @@ hyprpolkitagent
 inter-font
 lazygit
 luarocks
+lolcat
 nautilus
 neovim
 networkmanager
