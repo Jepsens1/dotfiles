@@ -1,6 +1,6 @@
 hl.config({
     dwindle = {
-        preserve_split = true, -- You probably want this
+        preserve_split = true,
     },
 })
 hl.config({

@@ -1,5 +1,8 @@
 global terminal    = "ghostty"
 global fileManager = "nautilus"
 global menu        = "walker"
+global browser     = "firefox"
+global hyprlock    = "hyprlock"
 global powermenu   = "walker --provider menus:power"
+global thememenu   = "walker --provider menus:themes"
 global swaync      = "swaync-client -t -sw"
