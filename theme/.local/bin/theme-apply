@@ -27,6 +27,7 @@ REQUIRED_ROLES = (
     "teal",
     "magenta",
     "purple",
+    *(f"color{index}" for index in range(16)),
 )
 
 WAYBAR_COLORS = Path.home() / ".config/waybar/colors/custom.css"

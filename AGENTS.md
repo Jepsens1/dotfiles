@@ -18,7 +18,7 @@ Generated files sit beside those symlinks in real directories. Do not add them t
 - `~/.config/gtk-3.0/colors.css` and `~/.config/gtk-4.0/colors.css`
 - `~/.config/btop/themes/custom.theme`
 
-`swaync` config belongs in the `swaync` package. `swappy/.config/swaync` is empty; do not put files there. There is no `wallpapers` package. Images live only at `~/.local/share/wallpapers/<id>/`.
+`swaync` config belongs in the `swaync` package. `swappy/.config/swaync` is empty; do not put files there. There is no `wallpapers` package. Wallpaper images belong in `theme/.local/share/wallpapers/<id>/`, which stows to `~/.local/share/wallpapers/<id>/`.
 
 ## Themes
 

@@ -38,7 +38,7 @@ To add a theme, copy `tokyo-night` and keep the same role keys. Change the hex v
 theme/.config/theme/themes/<id>/colors.toml
 theme/.config/theme/themes/<id>/ghostty          # optional, official terminal theme
 theme/.config/theme/themes/<id>/vscode.json      # optional, official editor theme
-wallpapers/.local/share/wallpapers/<id>/
+theme/.local/share/wallpapers/<id>/
 ```
 
 `ghostty` is copied as-is. Leave it out only if the theme has no official Ghostty file. `color0` through `color15` in `colors.toml` should match that file, so Firefox and the terminal agree.
