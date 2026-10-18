@@ -7,6 +7,7 @@ HISTSIZE=10000
 SAVEHIST=50000
 
 alias ls='ls -l --color=auto'
+alias ll='ls -la --color=auto'
 alias grep='grep --color=auto'
 alias lzg='lazygit'
 
