@@ -28,6 +28,16 @@ A wallpaper is optional. GTK reload may fail in the TTY. That is fine if `colors
 
 `hyprland.lua` and `hyprlock.conf` use monitor `HDMI-A-2` and keyboard layout `dk`. Change those if this PC is different. `hyprctl monitors` prints the output name.
 
+## Neovim
+
+On first launch, lazy.nvim installs the configured plugings.
+
+Mason automatically installs the configured LSP servers. Install Conform's formatters with:
+
+```vim
+:MasonInstall stylua ruff prettierd prettier clang-format csharpier shfmt
+```
+
 ## Themes
 
 Super+T opens the theme menu. Pick a theme, then a wallpaper from that theme only. A theme uses the palette in `theme/.config/theme/themes/<id>/colors.toml`.
