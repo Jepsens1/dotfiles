@@ -20,3 +20,9 @@ Licensed under the Apache License, Version 2.0. The license text is included at 
 - `bibata/.local/share/icons/Bibata-Modern-Ice/` — from [ful1e5/Bibata_Cursor](https://github.com/ful1e5/Bibata_Cursor), copyright © 2018 Abdulkaiz Khatri.
 
 Licensed under the GNU General Public License, version 3 or (at your option) any later version. The license text is included at `bibata/.local/share/icons/Bibata-Modern-Ice/LICENSE`.
+
+## Waybar media-player example
+
+- `waybar/.config/waybar/scripts/mediaplayer.py` — based on [Waybar's bundled example](https://github.com/Alexays/Waybar/blob/master/resources/custom_modules/mediaplayer.py).
+
+Waybar is licensed under the MIT License, copyright © 2025 Alex. The full license text is included at `waybar/.config/waybar/scripts/LICENSE`.
