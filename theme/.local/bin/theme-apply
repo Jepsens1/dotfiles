@@ -187,8 +187,11 @@ def set_wallpaper(image: Path) -> None:
 def apply(theme_id: str, image: Path | None = None) -> None:
     if "/" in theme_id or theme_id in {"", ".", ".."}:
         sys.exit(f"Invalid theme name: {theme_id}")
-    if image is not None and not image.is_file():
-        sys.exit(f"Wallpaper does not exist: {image}")
+    if image is not None:
+        image = image.expanduser()
+        if not image.is_file():
+            sys.exit(f"Wallpaper does not exist: {image}")
+        image = image.resolve()
 
     root = theme_root()
     theme_dir = root / "themes" / theme_id
