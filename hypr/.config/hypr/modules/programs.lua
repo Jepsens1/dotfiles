@@ -1,4 +1,4 @@
-global terminal    = "ghostty"
+global terminal    = "ghostty +new-window"
 global fileManager = "nautilus"
 global menu        = "walker"
 global browser     = "firefox"
