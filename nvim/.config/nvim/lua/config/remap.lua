@@ -15,5 +15,14 @@ vim.keymap.set("x", "<leader>p", [['_dP]], { desc = "Paste without yanking repla
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
 vim.keymap.set("n", "<leader>Y", [["+Y]], { desc = "Yank line to system clipboard" })
 
+-- Briefly highlight text after yanking.
+vim.api.nvim_create_autocmd("TextYankPost", {
+    desc = "Highlight yanked text",
+    group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
+    callback = function()
+        vim.highlight.on_yank({ timeout = 100 })
+    end,
+})
+
 -- Delete without replacing the yank register.
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without yanking" })
