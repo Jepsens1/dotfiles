@@ -12,7 +12,7 @@ actions = { default = "hyprlock" }
 text = "Logout"
 icon = "system-log-out"
 keywords = ["logout", "exit"]
-actions = { default = "hyprctl dispatch 'hl.dsp.exit()'" }
+actions = { default = "uwsm stop" }
 
 [[entries]]
 text = "Reboot"

@@ -1,6 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
-killall -9 waybar
-waybar &
-systemctl --user reload swaync
-
+systemctl --user restart waybar.service
+systemctl --user reload swaync.service

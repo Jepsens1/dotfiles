@@ -205,8 +205,8 @@ def apply(theme_id: str, image: Path | None = None) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(css)
         print(f"Wrote {path}")
-    subprocess.run(["pkill", "-SIGUSR2", "waybar"], check=False)
-    subprocess.run(["swaync-client", "-rs"], check=False)
+    subprocess.run(["systemctl", "--user", "reload", "waybar.service"], check=False)
+    subprocess.run(["systemctl", "--user", "reload", "swaync.service"], check=False)
 
     gtk = render((root / "templates" / "gtk.css.tpl").read_text(), colors)
     for path in (GTK3_COLORS, GTK4_COLORS):
@@ -225,7 +225,10 @@ def apply(theme_id: str, image: Path | None = None) -> None:
     ghostty_source = theme_dir / "ghostty"
     if ghostty_source.is_file():
         shutil.copyfile(ghostty_source, GHOSTTY_COLORS)
-        subprocess.run(["pkill", "-SIGUSR2", "ghostty"], check=False)
+        subprocess.run(
+            ["systemctl", "--user", "reload", "app-com.mitchellh.ghostty.service"],
+            check=False,
+        )
         print(f"Copied ghostty to {GHOSTTY_COLORS}")
 
     BTOP_THEME.parent.mkdir(parents=True, exist_ok=True)

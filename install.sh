@@ -13,8 +13,13 @@ fi
 
 yay -S --needed - <packages.txt
 
-systemctl --user enable swaync
-systemctl enable --user app-com.mitchellh.ghostty.service
+systemctl --user enable swaync.service \
+    app-com.mitchellh.ghostty.service \
+    hyprpolkitagent.service \
+    hypridle.service \
+    waybar.service
+
+elephant service enable
 
 curl -fsSL https://mise.run | sh
 "$HOME/.local/bin/mise" install

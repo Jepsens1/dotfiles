@@ -16,7 +16,6 @@
 require("modules.monitors")
 require("modules.programs")
 require("modules.autostart")
-require("modules.envs")
 require("modules.decoration")
 require("modules.animations")
 require("modules.layout")

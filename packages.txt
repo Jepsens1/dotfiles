@@ -20,8 +20,9 @@ hyprlock
 hyprpolkitagent
 inter-font
 lazygit
-luarocks
+libnewt
 lolcat
+luarocks
 nautilus
 neovim
 networkmanager
@@ -48,6 +49,7 @@ tree-sitter-cli
 ttf-jetbrains-mono-nerd
 udiskie
 ufw
+uwsm
 vim
 waybar
 wget

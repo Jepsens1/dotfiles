@@ -12,7 +12,7 @@ stow */
 ./install.sh
 ```
 
-`install.sh` asks for your password if `yay` is missing. Do not run it as root. It installs the packages, mise, and OpenCode, and enables `swaync` for the graphical session. Do not start Hyprland yet.
+`install.sh` asks for your password if `yay` is missing. Do not run it as root. It installs the packages, mise, and OpenCode; enables the SwayNC, Ghostty, hyprpolkitagent, hypridle, and Waybar user services; and enables Elephant's user service. Do not start Hyprland yet.
 
 From the TTY, generate theme files before starting Hyprland. `install.sh` does not. Hyprland will not start without `~/.config/hypr/custom/colors.lua`.
 
@@ -21,6 +21,10 @@ theme-apply tokyo-night
 ```
 
 A wallpaper is optional. GTK reload may fail in the TTY. That is fine if `colors.lua` was written.
+
+## Hyprland session
+
+UWSM is included in `packages.txt`; choose **Hyprland (uwsm-managed)** at login. SDDM is not installed or enabled by these dotfiles, so install and enable it separately if needed.
 
 `ufw` is installed and not enabled. Enable it on a machine you own. Skip that on a work network that already has firewall rules.
 
@@ -40,7 +44,7 @@ Mason automatically installs the configured LSP servers. Install Conform's forma
 
 ## Themes
 
-Super+T opens the theme menu. Pick a theme, then a wallpaper from that theme only. A theme uses the palette in `theme/.config/theme/themes/<id>/colors.toml`.
+Super+Shift+T opens the theme menu. Pick a theme, then a wallpaper from that theme only. A theme uses the palette in `theme/.config/theme/themes/<id>/colors.toml`.
 
 To add a theme, copy `tokyo-night` and keep the same role keys. Change the hex values. Do not invent colors. Use that theme's published palette. Native names, such as `iris` or `mauve`, go in the comments, not in the keys. The wallpaper folder must have the same name:
 
@@ -67,10 +71,10 @@ Firefox colors need the Pywalfox add-on. The native app comes from mise.
 
 ## Stow again
 
-From `~/dotfiles`, after you add a file to a package:
+From `~/dotfiles`, after you add a file to a package, restow only that package. For example:
 
 ```bash
-stow -R */
+stow -R hypr
 ```
 
 `-R` replaces the old links. Do not use `--adopt` unless you mean to pull a home file into the repo.
