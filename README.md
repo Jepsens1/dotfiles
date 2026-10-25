@@ -52,12 +52,15 @@ To add a theme, copy `tokyo-night` and keep the same role keys. Change the hex v
 theme/.config/theme/themes/<id>/colors.toml
 theme/.config/theme/themes/<id>/ghostty          # optional, official terminal theme
 theme/.config/theme/themes/<id>/vscode.json      # optional, official editor theme
+theme/.config/theme/themes/<id>/neovim.lua       # optional, lazy.nvim plugin spec
 theme/.local/share/wallpapers/<id>/
 ```
 
 `ghostty` is copied as-is. Leave it out only if the theme has no official Ghostty file. `color0` through `color15` in `colors.toml` should match that file. Firefox does not use that order. `pywalfox.json.tpl` puts `background`, `accent`, `magenta`, and `foreground` in the slots Pywalfox reads.
 
 `vscode.json` names an editor theme and its extension. `theme-apply` installs the extension if it is missing and sets it in VSCodium. Set `opencode` in `colors.toml` to a built-in OpenCode theme name, such as `tokyonight`.
+
+`neovim.lua` is a lazy.nvim plugin spec that sets the theme's colorscheme. `theme-apply` records its path in `~/.cache/theme/neovim-spec`; themes without one fall back to Tokyo Night. Restart Neovim after switching themes.
 
 Restow after adding the files. Restart Elephant so it loads the new theme. Walker will not see it until then.
 

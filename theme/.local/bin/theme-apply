@@ -8,8 +8,8 @@ import sys
 import tomllib
 from pathlib import Path
 
-PLACEHOLDER = re.compile(r"\{\{\s*([A-Za-z0-9_]+)\s*\}\}")
 HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
+PLACEHOLDER = re.compile(r"\{\{\s*([A-Za-z0-9_]+)\s*\}\}")
 REQUIRED_ROLES = (
     "background",
     "background_dark",
@@ -29,49 +29,87 @@ REQUIRED_ROLES = (
     "purple",
     *(f"color{index}" for index in range(16)),
 )
-
-WAYBAR_COLORS = Path.home() / ".config/waybar/colors/custom.css"
-GHOSTTY_COLORS = Path.home() / ".config/ghostty/colors"
-WALKER_COLORS = Path.home() / ".config/walker/themes/custom/colors.css"
-SWAYNC_COLORS = Path.home() / ".config/swaync/colors/colors.css"
-GTK3_COLORS = Path.home() / ".config/gtk-3.0/colors.css"
-GTK4_COLORS = Path.home() / ".config/gtk-4.0/colors.css"
+CSS_OUTPUT = (
+    Path.home() / ".config/waybar/colors/custom.css",
+    Path.home() / ".config/walker/themes/custom/colors.css",
+    Path.home() / ".config/swaync/colors/colors.css",
+)
+GTK_OUTPUTS = (
+    Path.home() / ".config/gtk-3.0/colors.css",
+    Path.home() / ".config/gtk-4.0/colors.css",
+)
 GTK_RELOAD = Path.home() / ".config/theme/scripts/gtk-themes-reload.sh"
 HYPR_COLORS_LUA = Path.home() / ".config/hypr/custom/colors.lua"
 HYPR_COLORS_CONF = Path.home() / ".config/hypr/custom/colors.conf"
+GHOSTTY_COLORS = Path.home() / ".config/ghostty/colors"
 BTOP_THEME = Path.home() / ".config/btop/themes/custom.theme"
 BTOP_CONFIG = Path.home() / ".config/btop/btop.conf"
 PYWALFOX_COLORS = Path.home() / ".cache/wal/colors.json"
 PYWALFOX_UPDATE = Path.home() / ".local/share/mise/shims/pywalfox"
-HYPRLOCK_BG = Path.home() / ".config/theme/scripts/update-hyprlock-background.sh"
-AWWW = ["awww", "img", "--transition-type", "center", "--transition-fps", "60"]
-OPENCODE_CLI = Path.home() / ".config/opencode/cli.json"
-OPENCODE_TUI = Path.home() / ".config/opencode/tui.json"
 EDITORS = (
     ("codium", Path.home() / ".config/VSCodium/User/settings.json"),
     ("code", Path.home() / ".config/Code/User/settings.json"),
 )
+OPENCODE_CLI = Path.home() / ".config/opencode/cli.json"
+OPENCODE_TUI = Path.home() / ".config/opencode/tui.json"
+AWWW = ["awww", "img", "--transition-type", "center", "--transition-fps", "60"]
+HYPRLOCK_BG = Path.home() / ".config/theme/scripts/update-hyprlock-background.sh"
+NVIM_THEME_SPEC = Path.home() / ".cache/theme/neovim-spec"
 
-def theme_root() -> Path:
+
+def find_theme_root() -> Path:
     stowed = Path.home() / ".config/theme"
-    if (stowed / "themes").is_dir():
-        return stowed
-    # theme/.local/bin/theme-apply -> theme/.config/theme
     repo = Path(__file__).resolve().parents[2] / ".config/theme"
-    if (repo / "themes").is_dir():
-        return repo
+
+    for root in (stowed, repo):
+        if (root / "themes").is_dir():
+            return root
+
     sys.exit("Could not find themes/. Stow the theme package first.")
 
+
+def resolve_theme_dir(root: Path, theme_id: str) -> Path:
+    if "/" in theme_id or theme_id in {"", ".", ".."}:
+        sys.exit(f"Invalid theme name: {theme_id}")
+
+    theme_dir = root / "themes" / theme_id
+    if not (theme_dir / "colors.toml").is_file():
+        sys.exit(f"No colors.toml in {theme_dir}")
+
+    return theme_dir
+
+
+def validate_palette(colors: dict[str, str], path: Path) -> None:
+    missing = [role for role in REQUIRED_ROLES if role not in colors]
+    invalid = [
+        role
+        for role in REQUIRED_ROLES
+        if role in colors and not HEX.fullmatch(colors[role])
+    ]
+
+    errors = []
+    if missing:
+        errors.append(f"Missing color roles: {', '.join(missing)}")
+    if invalid:
+        errors.append(f"Invalid color roles (expected #RRGGBB): {', '.join(invalid)}")
+
+    if errors:
+        sys.exit(f"{path}:\n" + "\n".join(errors))
+
+
 def load_colors(path: Path) -> dict[str, str]:
-    with path.open("rb") as handle:
-        data = tomllib.load(handle)
-    return {key: value for key, value in data.items() if isinstance(value, str)}
+    try:
+        with path.open("rb") as handle:
+            data = tomllib.load(handle)
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        sys.exit(f"Could not read {path}: {error}")
+
+    colors = {key: value for key, value in data.items() if isinstance(value, str)}
+    validate_palette(colors, path)
+    return colors
+
 
 def palette_css(colors: dict[str, str]) -> str:
-    missing = [name for name in REQUIRED_ROLES if not HEX.fullmatch(colors.get(name, ""))]
-    if missing:
-        sys.exit(f"Missing colors.toml keys: {', '.join(missing)}")
-
     lines = [
         f"@define-color {key} {value};"
         for key, value in colors.items()
@@ -79,32 +117,63 @@ def palette_css(colors: dict[str, str]) -> str:
     ]
     return "\n".join(lines) + "\n"
 
-def source_name(name: str) -> str:
-    return name[:-4] if name.endswith("_hex") else name
+
+def color_key(token: str) -> str:
+    return token.removesuffix("_hex")
 
 
 def render(template: str, colors: dict[str, str]) -> str:
     missing = sorted(
-        name for name in PLACEHOLDER.findall(template) if source_name(name) not in colors
+        {
+            color_key(token)
+            for token in PLACEHOLDER.findall(template)
+            if color_key(token) not in colors
+        }
     )
     if missing:
         sys.exit(f"Missing colors.toml keys: {', '.join(missing)}")
 
     def replace(match: re.Match[str]) -> str:
-        name = match.group(1)
-        if name.endswith("_hex"):
-            source = colors.get(name[:-4])
-            if source is None or not HEX.fullmatch(source):
-                sys.exit(f"{name} needs a #RRGGBB color named {name[:-4]}")
-            return source[1:]
-        value = colors.get(name)
-        if value is None:
-            sys.exit(f"Missing colors.toml key: {name}")
+        token = match.group(1)
+        key = color_key(token)
+        value = colors[key]
+
         if not HEX.fullmatch(value):
-            sys.exit(f"{name} must be #RRGGBB, got {value!r}")
-        return value
+            sys.exit(f"{key} must be #RRGGBB, got {value!r}")
+
+        return value[1:] if token.endswith("_hex") else value
 
     return PLACEHOLDER.sub(replace, template)
+
+
+def write_file(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content)
+    print(f"Wrote {path}")
+
+
+def set_btop_theme() -> None:
+    BTOP_CONFIG.parent.mkdir(parents=True, exist_ok=True)
+    config = BTOP_CONFIG.read_text() if BTOP_CONFIG.is_file() else ""
+
+    config, count = re.subn(
+        r"(?m)^[ \t]*color_theme[ \t]*=.*$",
+        'color_theme = "custom"',
+        config,
+    )
+
+    if count == 0:
+        config = config.rstrip()
+        if config:
+            config += "\n"
+        config += 'color_theme = "custom"\n'
+
+    BTOP_CONFIG.write_text(config)
+    print(f"Set btop color theme to custom in {BTOP_CONFIG}")
+
+
+def run(command: list[str]) -> None:
+    subprocess.run(command, check=False)
 
 
 def read_json(path: Path) -> dict:
@@ -119,7 +188,12 @@ def write_json(path: Path, data: dict) -> None:
 
 
 def extension_installed(command: str, extension: str) -> bool:
-    result = subprocess.run([command, "--list-extensions"], capture_output=True, text=True)
+    result = subprocess.run(
+        [command, "--list-extensions"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
     return extension in result.stdout.splitlines()
 
 
@@ -127,16 +201,20 @@ def set_vscode(theme_dir: Path) -> None:
     descriptor = theme_dir / "vscode.json"
     if not descriptor.is_file():
         return
-    data = json.loads(descriptor.read_text())
+
+    data = read_json(descriptor)
     name = data.get("name") or ""
     extension = data.get("extension") or ""
     if not name:
         return
+
     for command, settings in EDITORS:
         if shutil.which(command) is None:
             continue
+
         if extension and not extension_installed(command, extension):
-            subprocess.run([command, "--install-extension", extension], check=False)
+            run([command, "--install-extension", extension])
+
         current = read_json(settings)
         current["workbench.colorTheme"] = name
         write_json(settings, current)
@@ -148,110 +226,108 @@ def set_opencode(name: str, mode: str) -> None:
     theme = data.get("theme")
     if not isinstance(theme, dict):
         theme = {}
+
     theme["name"] = name
     theme["mode"] = mode
     data["theme"] = theme
     data.setdefault("$schema", "https://opencode.ai/v2/cli.json")
     write_json(OPENCODE_CLI, data)
+
     if OPENCODE_TUI.is_file():
         tui = read_json(OPENCODE_TUI)
         if isinstance(tui.get("theme"), str):
             tui["theme"] = name
             write_json(OPENCODE_TUI, tui)
+
     print(f"Set OpenCode theme to {name}")
 
 
-def set_btop_theme() -> None:
-    BTOP_CONFIG.parent.mkdir(parents=True, exist_ok=True)
-    config = BTOP_CONFIG.read_text() if BTOP_CONFIG.is_file() else ""
-    config, count = re.subn(
-        r"(?m)^[ \t]*color_theme[ \t]*=.*$",
-        'color_theme = "custom"',
-        config,
-    )
-    if count == 0:
-        config = config.rstrip()
-        if config:
-            config += "\n"
-        config += 'color_theme = "custom"\n'
-    BTOP_CONFIG.write_text(config)
-    print(f"Set btop color theme to custom in {BTOP_CONFIG}")
+def set_neovim_theme(theme_dir: Path) -> None:
+    spec = theme_dir / "neovim.lua"
+    selected = str(spec.resolve()) if spec.is_file() else ""
+    write_file(NVIM_THEME_SPEC, selected + "\n")
 
 
 def set_wallpaper(image: Path) -> None:
-    subprocess.run([*AWWW, str(image)], check=False)
+    run([*AWWW, str(image)])
     if HYPRLOCK_BG.is_file():
-        subprocess.run([str(HYPRLOCK_BG), str(image)], check=False)
+        run([str(HYPRLOCK_BG), str(image)])
 
 
-def apply(theme_id: str, image: Path | None = None) -> None:
-    if "/" in theme_id or theme_id in {"", ".", ".."}:
-        sys.exit(f"Invalid theme name: {theme_id}")
+def apply(theme_id: str, image: Path | None = None):
     if image is not None:
         image = image.expanduser()
         if not image.is_file():
             sys.exit(f"Wallpaper does not exist: {image}")
         image = image.resolve()
+    root = find_theme_root()
+    theme_dir = resolve_theme_dir(root, theme_id)
+    colors = load_colors(theme_dir / "colors.toml")
 
-    root = theme_root()
-    theme_dir = root / "themes" / theme_id
-    colors_path = theme_dir / "colors.toml"
-    if not colors_path.is_file():
-        sys.exit(f"No colors.toml in {theme_dir}")
-
-    colors = load_colors(colors_path)
     css = palette_css(colors)
-    for path in (WAYBAR_COLORS, WALKER_COLORS, SWAYNC_COLORS):
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(css)
-        print(f"Wrote {path}")
-    subprocess.run(["systemctl", "--user", "reload", "waybar.service"], check=False)
-    subprocess.run(["systemctl", "--user", "reload", "swaync.service"], check=False)
+    for path in CSS_OUTPUT:
+        write_file(path, css)
 
-    gtk = render((root / "templates" / "gtk.css.tpl").read_text(), colors)
-    for path in (GTK3_COLORS, GTK4_COLORS):
-        path.write_text(gtk)
-        print(f"Wrote {path}")
-    subprocess.run([str(GTK_RELOAD), colors.get("mode", "dark")], check=False)
+    run(["systemctl", "--user", "reload", "waybar.service"])
+    run(["systemctl", "--user", "reload", "swaync.service"])
+
+    gtk_css = render((root / "templates/gtk.css.tpl").read_text(), colors)
+    for path in GTK_OUTPUTS:
+        write_file(path, gtk_css)
+
+    run([str(GTK_RELOAD), colors.get("mode", "dark")])
 
     for template, output in (
         ("hyprland.lua.tpl", HYPR_COLORS_LUA),
         ("hyprlock.conf.tpl", HYPR_COLORS_CONF),
     ):
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(render((root / "templates" / template).read_text(), colors))
-        print(f"Wrote {output}")
+        content = render((root / "templates" / template).read_text(), colors)
+        write_file(output, content)
 
     ghostty_source = theme_dir / "ghostty"
     if ghostty_source.is_file():
+        GHOSTTY_COLORS.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ghostty_source, GHOSTTY_COLORS)
-        subprocess.run(
-            ["systemctl", "--user", "reload", "app-com.mitchellh.ghostty.service"],
-            check=False,
+        run(
+            [
+                "systemctl",
+                "--user",
+                "reload",
+                "app-com.mitchellh.ghostty.service",
+            ]
         )
         print(f"Copied ghostty to {GHOSTTY_COLORS}")
 
-    BTOP_THEME.parent.mkdir(parents=True, exist_ok=True)
-    BTOP_THEME.write_text(render((root / "templates" / "btop.theme.tpl").read_text(), colors))
-    print(f"Wrote {BTOP_THEME}")
+    btop_theme = render((root / "templates/btop.theme.tpl").read_text(), colors)
+    write_file(BTOP_THEME, btop_theme)
     set_btop_theme()
-    subprocess.run(["pkill", "-USR2", "btop"], check=False)
+    run(["pkill", "-USR2", "btop"])
 
-    PYWALFOX_COLORS.parent.mkdir(parents=True, exist_ok=True)
-    PYWALFOX_COLORS.write_text(render((root / "templates" / "pywalfox.json.tpl").read_text(), colors))
-    print(f"Wrote {PYWALFOX_COLORS}")
-    subprocess.run([str(PYWALFOX_UPDATE), "update"], check=False)
+    pywalfox_colors = render(
+        (root / "templates/pywalfox.json.tpl").read_text(),
+        colors,
+    )
+    write_file(PYWALFOX_COLORS, pywalfox_colors)
+    run([str(PYWALFOX_UPDATE), "update"])
 
     set_vscode(theme_dir)
+
     if colors.get("opencode"):
         set_opencode(colors["opencode"], colors.get("mode", "dark"))
+
+    set_neovim_theme(theme_dir)
 
     if image is not None:
         set_wallpaper(image)
 
 
-if __name__ == "__main__":
+def main() -> None:
     if len(sys.argv) not in {2, 3}:
         sys.exit(f"Usage: {Path(sys.argv[0]).name} <theme> [wallpaper]")
+
     wallpaper = Path(sys.argv[2]) if len(sys.argv) == 3 else None
     apply(sys.argv[1], wallpaper)
+
+
+if __name__ == "__main__":
+    main()
