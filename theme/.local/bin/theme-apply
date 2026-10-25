@@ -40,6 +40,7 @@ GTK_RELOAD = Path.home() / ".config/theme/scripts/gtk-themes-reload.sh"
 HYPR_COLORS_LUA = Path.home() / ".config/hypr/custom/colors.lua"
 HYPR_COLORS_CONF = Path.home() / ".config/hypr/custom/colors.conf"
 BTOP_THEME = Path.home() / ".config/btop/themes/custom.theme"
+BTOP_CONFIG = Path.home() / ".config/btop/btop.conf"
 PYWALFOX_COLORS = Path.home() / ".cache/wal/colors.json"
 PYWALFOX_UPDATE = Path.home() / ".local/share/mise/shims/pywalfox"
 HYPRLOCK_BG = Path.home() / ".config/theme/scripts/update-hyprlock-background.sh"
@@ -160,6 +161,23 @@ def set_opencode(name: str, mode: str) -> None:
     print(f"Set OpenCode theme to {name}")
 
 
+def set_btop_theme() -> None:
+    BTOP_CONFIG.parent.mkdir(parents=True, exist_ok=True)
+    config = BTOP_CONFIG.read_text() if BTOP_CONFIG.is_file() else ""
+    config, count = re.subn(
+        r"(?m)^[ \t]*color_theme[ \t]*=.*$",
+        'color_theme = "custom"',
+        config,
+    )
+    if count == 0:
+        config = config.rstrip()
+        if config:
+            config += "\n"
+        config += 'color_theme = "custom"\n'
+    BTOP_CONFIG.write_text(config)
+    print(f"Set btop color theme to custom in {BTOP_CONFIG}")
+
+
 def set_wallpaper(image: Path) -> None:
     subprocess.run([*AWWW, str(image)], check=False)
     if HYPRLOCK_BG.is_file():
@@ -210,6 +228,7 @@ def apply(theme_id: str, image: Path | None = None) -> None:
     BTOP_THEME.parent.mkdir(parents=True, exist_ok=True)
     BTOP_THEME.write_text(render((root / "templates" / "btop.theme.tpl").read_text(), colors))
     print(f"Wrote {BTOP_THEME}")
+    set_btop_theme()
     subprocess.run(["pkill", "-USR2", "btop"], check=False)
 
     PYWALFOX_COLORS.parent.mkdir(parents=True, exist_ok=True)

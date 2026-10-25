@@ -8,7 +8,7 @@ Arch/Hyprland dotfiles; each top-level directory is a GNU Stow package mirroring
 - Do not stow the repo root. `install.sh`, `packages.txt`, `README.md`, and `AGENTS.md` are not packages. `install.sh` installs packages, mise, OpenCode, and enables swaync; do not run for config edits or as root.
 - `packages.txt` is one system package per line (`yay -S --needed - < packages.txt`). `pywalfox` is mise-managed (`pypi:pywalfox`), not an Arch package.
 - Keep generated theme outputs out of packages: `~/.config/hypr/custom/{colors.lua,colors.conf}`, `~/.config/waybar/colors/custom.css`, `~/.config/ghostty/colors`, `~/.config/walker/themes/custom/colors.css`, `~/.config/swaync/colors/colors.css`, `~/.config/gtk-3.0/colors.css`, `~/.config/gtk-4.0/colors.css`, and `~/.config/btop/themes/custom.theme`.
-- `theme-apply` may also update VSCodium/Code `settings.json` and OpenCode `cli.json`/`tui.json`; these are user settings, not Stow files. SwayNC config belongs in `swaync/`; wallpaper images belong in `theme/.local/share/wallpapers/<id>/`.
+- `theme-apply` may also update btop's `~/.config/btop/btop.conf` (`color_theme`), VSCodium/Code `settings.json`, and OpenCode `cli.json`/`tui.json`; these are user settings, not Stow files. SwayNC config belongs in `swaync/`; wallpaper images belong in `theme/.local/share/wallpapers/<id>/`.
 
 ## Themes
 
