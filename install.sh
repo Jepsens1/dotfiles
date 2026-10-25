@@ -21,6 +21,8 @@ systemctl --user enable swaync.service \
 
 elephant service enable
 
+chsh -s "$(command -v zsh)"
+
 curl -fsSL https://mise.run | sh
 "$HOME/.local/bin/mise" install
 

@@ -2,23 +2,20 @@
 
 Arch + Hyprland config. Each top-level directory is a GNU Stow package. `install.sh` and `packages.txt` are not.
 
-Put the repo at `~/dotfiles`.
-
 ## New machine
 
 ```bash
+sudo pacman -S --needed git stow
+git clone https://github.com/Jepsens1/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 stow */
 ./install.sh
+~/.local/bin/theme-apply tokyo-night
 ```
 
-`install.sh` asks for your password if `yay` is missing. Do not run it as root. It installs the packages, mise, and OpenCode; enables the SwayNC, Ghostty, hyprpolkitagent, hypridle, and Waybar user services; and enables Elephant's user service. Do not start Hyprland yet.
+Git and Stow are bootstrapped first because they are needed to clone and stow the dotfiles; Stow is also listed in `packages.txt`. Run `install.sh` as your normal user, not as root. It asks for your password if `yay` is missing, installs the packages, mise, and OpenCode; enables the SwayNC, Ghostty, hyprpolkitagent, hypridle, and Waybar user services; enables Elephant's user service; and sets your login shell to Zsh with `chsh`. `chsh` may ask for your password, and the change takes effect on your next login.
 
-From the TTY, generate theme files before starting Hyprland. `install.sh` does not. Hyprland will not start without `~/.config/hypr/custom/colors.lua`.
-
-```bash
-theme-apply tokyo-night
-```
+The final command generates theme files from the TTY before you log in to Hyprland. `install.sh` does not generate them. Hyprland will not start without `~/.config/hypr/custom/colors.lua`.
 
 A wallpaper is optional. GTK reload may fail in the TTY. That is fine if `colors.lua` was written.
 
