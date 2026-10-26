@@ -22,11 +22,11 @@ hl.bind("Print", hl.dsp.exec_cmd('grim - | swappy -f -'))
 -- Notification Center
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(swaync))
 
--- Move focus with mainMod + arrow keys
-hl.bind(mainMod .. " + l",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + h", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + k",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + j",  hl.dsp.focus({ direction = "down" }))
+-- Move focus with mainMod + vim keys
+hl.bind(mainMod .. " + h", hl.dsp.focus({ direction = "left" }))
+hl.bind(mainMod .. " + l", hl.dsp.focus({ direction = "right" }))
+hl.bind(mainMod .. " + k", hl.dsp.focus({ direction = "up" }))
+hl.bind(mainMod .. " + j", hl.dsp.focus({ direction = "down" }))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]

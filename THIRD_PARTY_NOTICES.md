@@ -26,3 +26,9 @@ Licensed under the GNU General Public License, version 3 or (at your option) any
 - `waybar/.config/waybar/scripts/mediaplayer.py` — based on [Waybar's bundled example](https://github.com/Alexays/Waybar/blob/master/resources/custom_modules/mediaplayer.py).
 
 Waybar is licensed under the MIT License, copyright © 2025 Alex. The full license text is included at `waybar/.config/waybar/scripts/LICENSE`.
+
+## DiceBear avatar
+
+- `hypr/.face.icon` — "Voxel Bot" by [DiceBear](https://www.dicebear.com).
+
+Licensed under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).

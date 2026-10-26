@@ -1,6 +1,6 @@
 # Dotfiles
 
-Arch + Hyprland config. Each top-level directory is a GNU Stow package. `install.sh` and `packages.txt` are not.
+Arch + Hyprland config. Each top-level directory is a GNU Stow package. `install.sh`, `packages.txt`, `README.md`, `THIRD_PARTY_NOTICES.md`, and `AGENTS.md` are not.
 
 ## New machine
 
@@ -31,12 +31,20 @@ UWSM is included in `packages.txt`; choose **Hyprland (uwsm-managed)** at login.
 
 ## Neovim
 
-On first launch, lazy.nvim installs the configured plugings.
+On first launch, lazy.nvim installs the configured plugins.
 
 Mason automatically installs the configured LSP servers. Install Conform's formatters with:
 
 ```vim
 :MasonInstall stylua ruff prettierd prettier clang-format csharpier shfmt
+```
+
+## Tmux
+
+Install [TPM](https://github.com/tmux-plugins/tpm) and fetch the configured plugins (`prefix` + `I`, which is `Ctrl+S` then `Shift+I`):
+
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
 ## Themes
