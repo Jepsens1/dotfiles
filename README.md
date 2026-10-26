@@ -8,12 +8,12 @@ Arch + Hyprland config. Each top-level directory is a GNU Stow package. `install
 sudo pacman -S --needed git stow
 git clone https://github.com/Jepsens1/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow */
+stow --no-folding */
 ./install.sh
 ~/.local/bin/theme-apply tokyo-night
 ```
 
-Git and Stow are bootstrapped first because they are needed to clone and stow the dotfiles; Stow is also listed in `packages.txt`. Run `install.sh` as your normal user, not as root. It asks for your password if `yay` is missing, installs the packages, mise, and OpenCode; enables the SwayNC, Ghostty, hyprpolkitagent, hypridle, and Waybar user services; enables Elephant's user service; and sets your login shell to Zsh with `chsh`. `chsh` may ask for your password, and the change takes effect on your next login.
+`--no-folding` is only needed on that first stow. It keeps missing directories from becoming one symlink into the repo, so `mise` and `theme-apply` do not write into git. Later restows do not need the flag while those directories exist. Git and Stow are bootstrapped first because they are needed to clone and stow the dotfiles; Stow is also listed in `packages.txt`. Run `install.sh` as your normal user, not as root. It asks for your password if `yay` is missing, installs the packages, mise, and OpenCode; enables the SwayNC, Ghostty, hyprpolkitagent, hypridle, and Waybar user services; enables Elephant's user service; and sets your login shell to Zsh with `chsh`. `chsh` may ask for your password, and the change takes effect on your next login.
 
 The final command generates theme files from the TTY before you log in to Hyprland. `install.sh` does not generate them. Hyprland will not start without `~/.config/hypr/custom/colors.lua`.
 

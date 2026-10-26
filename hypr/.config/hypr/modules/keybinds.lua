@@ -9,7 +9,7 @@ hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(thememenu))
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(powermenu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
+hl.bind(mainMod .. " + SHIFT + J", hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
 
 -- Restart Waybar's user service and reload SwayNC
