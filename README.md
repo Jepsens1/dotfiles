@@ -27,7 +27,7 @@ UWSM is included in `packages.txt`; choose **Hyprland (uwsm-managed)** at login.
 
 ## Current machine
 
-`hyprland.lua` and `hyprlock.conf` use monitor `HDMI-A-2` and keyboard layout `dk`. Change those if this PC is different. `hyprctl monitors` prints the output name.
+`hyprland.lua` and `hyprlock.conf` use monitor `HDMI-A-1` and keyboard layout `dk`. Change those if this PC is different. `hyprctl monitors` prints the output name.
 
 ## Neovim
 
